@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ejemplo: Plan de Entrenamiento PPL</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .exercise-card {
+            transition: transform 0.2s;
+        }
+        .exercise-card:hover {
+            transform: translateX(5px);
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-gray-50 to-gray-100 min-h-screen py-8">
+    <div class="container mx-auto px-4 max-w-5xl">
+        <!-- Header -->
+        <div class="bg-gradient-to-r from-purple-600 to-blue-600 rounded-2xl shadow-2xl p-8 mb-8 text-white">
+            <div class="flex items-center gap-4 mb-4">
+                <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M14.4 14.4 9.6 9.6"/><path d="M18.657 21.485a2 2 0 1 1-2.829-2.828l-1.767 1.768a2 2 0 1 1-2.829-2.829l6.364-6.364a2 2 0 1 1 2.829 2.829l-1.768 1.767a2 2 0 1 1 2.828 2.829z"/>
+                </svg>
+                <div>
+                    <h1 class="text-4xl font-bold">Rutina PPL (Push Pull Legs)</h1>
+                    <p class="text-blue-100">Plan de 6 días • Hipertrofia • Nivel Intermedio</p>
+                </div>
+            </div>
+            <div class="grid grid-cols-3 gap-4 mt-6">
+                <div class="bg-white/20 rounded-lg p-3 text-center">
+                    <div class="text-2xl font-bold">8</div>
+                    <div class="text-sm">Semanas</div>
+                </div>
+                <div class="bg-white/20 rounded-lg p-3 text-center">
+                    <div class="text-2xl font-bold">6</div>
+                    <div class="text-sm">Días</div>
+                </div>
+                <div class="bg-white/20 rounded-lg p-3 text-center">
+                    <div class="text-2xl font-bold">36</div>
+                    <div class="text-sm">Ejercicios</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Day 1: Pull -->
+        <div class="bg-white rounded-xl shadow-lg p-6 mb-6 border-l-4 border-blue-500">
+            <div class="flex items-center justify-between mb-4">
+                <div>
+                    <h2 class="text-2xl font-bold text-gray-800">Día 1: Pull - Espalda y Bíceps</h2>
+                    <p class="text-gray-600 text-sm">Trabajo de jalón vertical y horizontal</p>
+                </div>
+                <span class="bg-blue-100 text-blue-800 px-4 py-2 rounded-full font-semibold">6 ejercicios</span>
+            </div>
+            
+            <div class="bg-blue-50 border-l-4 border-blue-400 p-3 mb-4 rounded">
+                <p class="text-sm text-blue-800"><strong>💡 Nota:</strong> Calienta bien antes de las dominadas. Mantén la tensión en la espalda durante todo el ejercicio.</p>
+            </div>
+
+            <div class="space-y-3">
+                <div class="exercise-card bg-gray-50 rounded-lg p-4 border-l-2 border-blue-300">
+                    <div class="flex items-start gap-3">
+                        <div class="bg-blue-500 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold flex-shrink-0">1</div>
+                        <div class="flex-1">
+                            <h3 class="font-bold text-lg text-gray-800">Dominadas</h3>
+                            <div class="flex gap-4 text-sm text-gray-600 mt-1">
+                                <span class="bg-white px-3 py-1 rounded">4 series</span>
+                                <span class="bg-white px-3 py-1 rounded">10 reps</span>
+                                <span class="bg-white px-3 py-1 rounded">Peso corporal</span>
+                                <span class="bg-white px-3 py-1 rounded">⏱️ 90 seg</span>
+                            </div>
+                            <p class="text-sm text-gray-600 mt-2">👉 Si no logras las 10, haz las que puedas. Si son muy fáciles, puedes agregar peso.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="exercise-card bg-gray-50 rounded-lg p-4 border-l-2 border-blue-300">
+                    <div class="flex items-start gap-3">
+                        <div class="bg-blue-500 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold flex-shrink-0">2</div>
+                        <div class="flex-1">
+                            <h3 class="font-bold text-lg text-gray-800">Halones cerrados</h3>
+                            <div class="flex gap-4 text-sm text-gray-600 mt-1">
+                                <span class="bg-white px-3 py-1 rounded">4 series</span>
+                                <span class="bg-white px-3 py-1 rounded">15 reps</span>
+                                <span class="bg-white px-3 py-1 rounded">Progresivo</span>
+                                <span class="bg-white px-3 py-1 rounded">⏱️ 60 seg</span>
+                            </div>
+                            <p class="text-sm text-gray-600 mt-2">👉 Controla el movimiento en la bajada</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="exercise-card bg-gray-50 rounded-lg p-4 border-l-2 border-blue-300">
+                    <div class="flex items-start gap-3">
+                        <div class="bg-blue-500 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold flex-shrink-0">3</div>
+                        <div class="flex-1">
+                            <h3 class="font-bold text-lg text-gray-800">Pullover</h3>
+                            <div class="flex gap-4 text-sm text-gray-600 mt-1">
+                                <span class="bg-white px-3 py-1 rounded">3 series</span>
+                                <span class="bg-white px-3 py-1 rounded">15 reps</span>
+                                <span class="bg-white px-3 py-1 rounded">15-20kg</span>
+                                <span class="bg-white px-3 py-1 rounded">⏱️ 60 seg</span>
+                            </div>
+                            <p class="text-sm text-gray-600 mt-2">👉 Mantén los codos ligeramente flexionados</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="exercise-card bg-gray-50 rounded-lg p-4 border-l-2 border-blue-300">
+                    <div class="flex items-start gap-3">
+                        <div class="bg-blue-500 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold flex-shrink-0">4</div>
+                        <div class="flex-1">
+                            <h3 class="font-bold text-lg text-gray-800">Remo con mancuerna</h3>
+                            <div class="flex gap-4 text-sm text-gray-600 mt-1">
+                                <span class="bg-white px-3 py-1 rounded">3 series</span>
+                                <span class="bg-white px-3 py-1 rounded">12 reps</span>
+                                <span class="bg-white px-3 py-1 rounded">Progresivo</span>
+                                <span class="bg-white px-3 py-1 rounded">⏱️ 60 seg</span>
+                            </div>
+                            <p class="text-sm text-gray-600 mt-2">👉 3 series de 12 repeticiones por brazo</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="exercise-card bg-gray-50 rounded-lg p-4 border-l-2 border-blue-300">
+                    <div class="flex items-start gap-3">
+                        <div class="bg-blue-500 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold flex-shrink-0">5</div>
+                        <div class="flex-1">
+                            <h3 class="font-bold text-lg text-gray-800">Curl de bíceps con mancuerna</h3>
+                            <div class="flex gap-4 text-sm text-gray-600 mt-1">
+                                <span class="bg-white px-3 py-1 rounded">3 series</span>
+                                <span class="bg-white px-3 py-1 rounded">15 reps</span>
+                                <span class="bg-white px-3 py-1 rounded">10-15kg</span>
+                                <span class="bg-white px-3 py-1 rounded">⏱️ 45 seg</span>
+                            </div>
+                            <p class="text-sm text-gray-600 mt-2">👉 Evita balancear el cuerpo</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="exercise-card bg-gray-50 rounded-lg p-4 border-l-2 border-blue-300">
+                    <div class="flex items-start gap-3">
+                        <div class="bg-blue-500 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold flex-shrink-0">6</div>
+                        <div class="flex-1">
+                            <h3 class="font-bold text-lg text-gray-800">Predicador</h3>
+                            <div class="flex gap-4 text-sm text-gray-600 mt-1">
+                                <span class="bg-white px-3 py-1 rounded">3 series</span>
+                                <span class="bg-white px-3 py-1 rounded">15 reps</span>
+                                <span class="bg-white px-3 py-1 rounded">Moderado</span>
+                                <span class="bg-white px-3 py-1 rounded">⏱️ 45 seg</span>
+                            </div>
+                            <p class="text-sm text-gray-600 mt-2">👉 Full contracción en cada rep</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Day 2: Push -->
+        <div class="bg-white rounded-xl shadow-lg p-6 mb-6 border-l-4 border-green-500">
+            <div class="flex items-center justify-between mb-4">
+                <div>
+                    <h2 class="text-2xl font-bold text-gray-800">Día 2: Push - Pecho y Hombros</h2>
+                    <p class="text-gray-600 text-sm">Trabajo de empuje horizontal y vertical</p>
+                </div>
+                <span class="bg-green-100 text-green-800 px-4 py-2 rounded-full font-semibold">6 ejercicios</span>
+            </div>
+            
+            <div class="bg-green-50 border-l-4 border-green-400 p-3 mb-4 rounded">
+                <p class="text-sm text-green-800"><strong>💡 Nota:</strong> Mantén el core activado en todos los ejercicios. Respiración controlada.</p>
+            </div>
+
+            <div class="space-y-3">
+                <div class="exercise-card bg-gray-50 rounded-lg p-4 border-l-2 border-green-300">
+                    <div class="flex items-start gap-3">
+                        <div class="bg-green-500 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold flex-shrink-0">1</div>
+                        <div class="flex-1">
+                            <h3 class="font-bold text-lg text-gray-800">Press banca plano</h3>
+                            <div class="flex gap-4 text-sm text-gray-600 mt-1">
+                                <span class="bg-white px-3 py-1 rounded">4 series</span>
+                                <span class="bg-white px-3 py-1 rounded">8-10 reps</span>
+                                <span class="bg-white px-3 py-1 rounded">Progresivo</span>
+                                <span class="bg-white px-3 py-1 rounded">⏱️ 90 seg</span>
+                            </div>
+                            <p class="text-sm text-gray-600 mt-2">👉 Baja la barra hasta el pecho controladamente</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="exercise-card bg-gray-50 rounded-lg p-4 border-l-2 border-green-300">
+                    <div class="flex items-start gap-3">
+                        <div class="bg-green-500 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold flex-shrink-0">2</div>
+                        <div class="flex-1">
+                            <h3 class="font-bold text-lg text-gray-800">Press inclinado con mancuernas</h3>
+                            <div class="flex gap-4 text-sm text-gray-600 mt-1">
+                                <span class="bg-white px-3 py-1 rounded">4 series</span>
+                                <span class="bg-white px-3 py-1 rounded">10-12 reps</span>
+                                <span class="bg-white px-3 py-1 rounded">Progresivo</span>
+                                <span class="bg-white px-3 py-1 rounded">⏱️ 75 seg</span>
+                            </div>
+                            <p class="text-sm text-gray-600 mt-2">👉 Inclinación de 30-45 grados</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="text-center text-gray-500 my-4">
+                    <span class="bg-gray-200 px-4 py-2 rounded-full text-sm">... 4 ejercicios más ...</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Day 3: Legs -->
+        <div class="bg-white rounded-xl shadow-lg p-6 mb-6 border-l-4 border-orange-500">
+            <div class="flex items-center justify-between mb-4">
+                <div>
+                    <h2 class="text-2xl font-bold text-gray-800">Día 3: Legs - Pierna Completa</h2>
+                    <p class="text-gray-600 text-sm">Trabajo de tren inferior</p>
+                </div>
+                <span class="bg-orange-100 text-orange-800 px-4 py-2 rounded-full font-semibold">6 ejercicios</span>
+            </div>
+            
+            <div class="bg-orange-50 border-l-4 border-orange-400 p-3 mb-4 rounded">
+                <p class="text-sm text-orange-800"><strong>💡 Nota:</strong> Este es el día más exigente, asegúrate de descansar bien.</p>
+            </div>
+
+            <div class="space-y-3">
+                <div class="exercise-card bg-gray-50 rounded-lg p-4 border-l-2 border-orange-300">
+                    <div class="flex items-start gap-3">
+                        <div class="bg-orange-500 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold flex-shrink-0">1</div>
+                        <div class="flex-1">
+                            <h3 class="font-bold text-lg text-gray-800">Sentadilla con barra</h3>
+                            <div class="flex gap-4 text-sm text-gray-600 mt-1">
+                                <span class="bg-white px-3 py-1 rounded">4 series</span>
+                                <span class="bg-white px-3 py-1 rounded">8-10 reps</span>
+                                <span class="bg-white px-3 py-1 rounded">Progresivo</span>
+                                <span class="bg-white px-3 py-1 rounded">⏱️ 120 seg</span>
+                            </div>
+                            <p class="text-sm text-gray-600 mt-2">👉 Profundidad paralela o más. Espalda recta.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="text-center text-gray-500 my-4">
+                    <span class="bg-gray-200 px-4 py-2 rounded-full text-sm">... 5 ejercicios más ...</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- JSON Example -->
+        <div class="bg-gray-900 rounded-xl shadow-lg p-6 mb-6">
+            <h2 class="text-xl font-bold text-white mb-4">📋 Estructura JSON del Plan</h2>
+            <div class="bg-gray-800 rounded-lg p-4 overflow-x-auto">
+<pre class="text-green-400 text-sm"><code>{
+  "participante_id": 1,
+  "nombre": "Rutina PPL",
+  "objetivo": "Hipertrofia",
+  "nivel": "Intermedio",
+  "duracion_semanas": 8,
+  "fecha_inicio": "2024-02-01",
+  "dias": [
+    {
+      "numero_dia": 1,
+      "nombre": "Pull - Espalda y Bíceps",
+      "notas": "Calienta bien antes de dominadas",
+      "ejercicios": [
+        {
+          "nombre_ejercicio": "Dominadas",
+          "series": 4,
+          "repeticiones": "10",
+          "peso": "Peso corporal",
+          "descanso": "90 seg",
+          "notas": "Si no logras las 10, haz las que puedas",
+          "orden": 1
+        },
+        {
+          "nombre_ejercicio": "Halones cerrados",
+          "series": 4,
+          "repeticiones": "15",
+          "peso": "Progresivo",
+          "descanso": "60 seg",
+          "orden": 2
+        }
+      ]
+    }
+  ]
+}</code></pre>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl shadow-lg p-6 text-white text-center">
+            <h3 class="text-2xl font-bold mb-2">🎯 Nuevo Modelo Implementado</h3>
+            <p class="text-blue-100">Flexibilidad total para crear planes de entrenamiento personalizados</p>
+            <div class="flex justify-center gap-4 mt-4">
+                <div class="bg-white/20 rounded-lg px-4 py-2">
+                    <div class="font-bold">Días ilimitados</div>
+                </div>
+                <div class="bg-white/20 rounded-lg px-4 py-2">
+                    <div class="font-bold">Ejercicios ilimitados</div>
+                </div>
+                <div class="bg-white/20 rounded-lg px-4 py-2">
+                    <div class="font-bold">100% personalizable</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
