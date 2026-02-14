@@ -23,7 +23,7 @@ const handleValidationErrors = (req, res, next) => {
 // Obtener todos los usuarios (solo admin)
 router.get('/', authenticateToken, isAdmin, asyncHandler(async (req, res) => {
   const [usuarios] = await pool.query(
-    'SELECT id, nombre, email, rol, created_at FROM usuarios ORDER BY created_at DESC'
+    'SELECT id, nombre, email, rol FROM usuarios ORDER BY id DESC'
   );
 
   res.json({

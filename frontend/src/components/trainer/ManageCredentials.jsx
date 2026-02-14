@@ -12,6 +12,8 @@ function ManageCredentials({ onBack }) {
   const [newPassword, setNewPassword] = useState('');
   const [newEmail, setNewEmail] = useState('');
   const [loading, setLoading] = useState(false);
+  const [loadingData, setLoadingData] = useState(true);
+  const [loadError, setLoadError] = useState('');
   const [message, setMessage] = useState({ type: '', text: '' });
 
   useEffect(() => {
@@ -19,16 +21,40 @@ function ManageCredentials({ onBack }) {
   }, []);
 
   const loadData = async () => {
-    try {
-      const [usersRes, participantsRes] = await Promise.all([
-        usuariosService.obtenerTodos(),
-        participantesService.obtenerTodos()
-      ]);
-      setUsuarios(usersRes.data || usersRes);
-      setParticipantes(participantsRes.data || participantsRes);
-    } catch (error) {
-      console.error('Error cargando datos:', error);
+    setLoadingData(true);
+    setLoadError('');
+
+    // Cargar usuarios y participantes de forma independiente
+    // para que un error en uno no bloquee al otro
+    const results = await Promise.allSettled([
+      usuariosService.obtenerTodos(),
+      participantesService.obtenerTodos()
+    ]);
+
+    const [usersResult, participantsResult] = results;
+    const errors = [];
+
+    if (usersResult.status === 'fulfilled') {
+      const usersData = usersResult.value;
+      setUsuarios(usersData.data || usersData);
+    } else {
+      console.error('Error cargando usuarios:', usersResult.reason);
+      errors.push('entrenadores/admins');
     }
+
+    if (participantsResult.status === 'fulfilled') {
+      const participantsData = participantsResult.value;
+      setParticipantes(participantsData.data || participantsData);
+    } else {
+      console.error('Error cargando participantes:', participantsResult.reason);
+      errors.push('participantes');
+    }
+
+    if (errors.length > 0) {
+      setLoadError(`Error al cargar ${errors.join(' y ')}`);
+    }
+
+    setLoadingData(false);
   };
 
   const handleResetPassword = async () => {
@@ -124,8 +150,21 @@ function ManageCredentials({ onBack }) {
         </button>
       </div>
 
+      {loadError && (
+        <div className="message message-error" style={{ marginBottom: '20px' }}>
+          {loadError}
+          <button onClick={loadData} className="btn-small btn-secondary" style={{ marginLeft: '10px' }}>
+            Reintentar
+          </button>
+        </div>
+      )}
+
       <div className="credentials-list">
-        {currentList.length === 0 ? (
+        {loadingData ? (
+          <div className="empty-state">
+            <p>Cargando {activeTab === 'participantes' ? 'participantes' : 'usuarios'}...</p>
+          </div>
+        ) : currentList.length === 0 ? (
           <div className="empty-state">
             <UserIcon />
             <p>No hay {activeTab === 'participantes' ? 'participantes' : 'usuarios'} registrados</p>

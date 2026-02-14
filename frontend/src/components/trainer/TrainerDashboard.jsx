@@ -147,14 +147,14 @@ function TrainerDashboard({ user, onLogout, setView }) {
   }
 
   return (
-    <div className="dashboard">
+    <div className={`dashboard ${isAdmin ? 'admin-dashboard' : 'trainer-dashboard'}`}>
       <header className="dashboard-header">
         <div className="header-content">
           <div className="header-left">
             <DumbbellIcon />
             <div>
               <h1 className="header-title">VIGOROSO</h1>
-              <p className="header-subtitle">Panel de Entrenador</p>
+              <p className="header-subtitle">{isAdmin ? 'Panel de Administrador' : 'Panel de Entrenador'}</p>
             </div>
           </div>
           <div className="header-right">

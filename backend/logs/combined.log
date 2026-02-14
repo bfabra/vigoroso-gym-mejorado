@@ -362,3 +362,145 @@ Error: Unknown column 'created_at' in 'field list'
 [2026-02-07 21:47:58] INFO: Login exitoso - Usuario: entrenador@gmail.com (ID: 3)
 [2026-02-07 21:49:17] INFO: Servidor iniciado en puerto 3001
 [2026-02-07 21:49:17] INFO: Entorno: development
+[2026-02-10 20:23:54] INFO: Servidor iniciado en puerto 3001
+[2026-02-10 20:23:54] INFO: Entorno: development
+[2026-02-10 20:26:51] INFO: Login exitoso - Usuario: entrenador@gmail.com (ID: 3)
+[2026-02-10 20:29:50] INFO: Login exitoso - Participante: fabraidee@gmail.com (ID: 2)
+[2026-02-10 20:30:35] INFO: Login exitoso - Participante: fabraidee@gmail.com (ID: 2)
+[2026-02-10 20:36:18] INFO: Login exitoso - Usuario: admin@gmail.com (ID: 1)
+[2026-02-10 20:36:19] ERROR: Error en GET /api/usuarios:
+Error: Unknown column 'created_at' in 'field list'
+    at PromisePool.query (D:\Proyectos\RepoGIT\vigoroso-gym-mejorado\backend\node_modules\mysql2\lib\promise\pool.js:36:22)
+    at D:\Proyectos\RepoGIT\vigoroso-gym-mejorado\backend\routes\usuarios.js:25:33
+    at D:\Proyectos\RepoGIT\vigoroso-gym-mejorado\backend\utils\asyncHandler.js:5:19
+    at Layer.handle [as handle_request] (D:\Proyectos\RepoGIT\vigoroso-gym-mejorado\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (D:\Proyectos\RepoGIT\vigoroso-gym-mejorado\backend\node_modules\express\lib\router\route.js:149:13)
+    at isAdmin (D:\Proyectos\RepoGIT\vigoroso-gym-mejorado\backend\middleware\auth.js:34:3)
+    at Layer.handle [as handle_request] (D:\Proyectos\RepoGIT\vigoroso-gym-mejorado\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (D:\Proyectos\RepoGIT\vigoroso-gym-mejorado\backend\node_modules\express\lib\router\route.js:149:13)
+    at authenticateToken (D:\Proyectos\RepoGIT\vigoroso-gym-mejorado\backend\middleware\auth.js:15:5)
+    at Layer.handle [as handle_request] (D:\Proyectos\RepoGIT\vigoroso-gym-mejorado\backend\node_modules\express\lib\router\layer.js:95:5)
+[2026-02-10 20:36:19] ERROR: Error en GET /api/usuarios:
+Error: Unknown column 'created_at' in 'field list'
+    at PromisePool.query (D:\Proyectos\RepoGIT\vigoroso-gym-mejorado\backend\node_modules\mysql2\lib\promise\pool.js:36:22)
+    at D:\Proyectos\RepoGIT\vigoroso-gym-mejorado\backend\routes\usuarios.js:25:33
+    at D:\Proyectos\RepoGIT\vigoroso-gym-mejorado\backend\utils\asyncHandler.js:5:19
+    at Layer.handle [as handle_request] (D:\Proyectos\RepoGIT\vigoroso-gym-mejorado\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (D:\Proyectos\RepoGIT\vigoroso-gym-mejorado\backend\node_modules\express\lib\router\route.js:149:13)
+    at isAdmin (D:\Proyectos\RepoGIT\vigoroso-gym-mejorado\backend\middleware\auth.js:34:3)
+    at Layer.handle [as handle_request] (D:\Proyectos\RepoGIT\vigoroso-gym-mejorado\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (D:\Proyectos\RepoGIT\vigoroso-gym-mejorado\backend\node_modules\express\lib\router\route.js:149:13)
+    at authenticateToken (D:\Proyectos\RepoGIT\vigoroso-gym-mejorado\backend\middleware\auth.js:15:5)
+    at Layer.handle [as handle_request] (D:\Proyectos\RepoGIT\vigoroso-gym-mejorado\backend\node_modules\express\lib\router\layer.js:95:5)
+[2026-02-10 20:37:35] ERROR: Error en GET /api/usuarios:
+Error: Unknown column 'created_at' in 'field list'
+    at PromisePool.query (D:\Proyectos\RepoGIT\vigoroso-gym-mejorado\backend\node_modules\mysql2\lib\promise\pool.js:36:22)
+    at D:\Proyectos\RepoGIT\vigoroso-gym-mejorado\backend\routes\usuarios.js:25:33
+    at D:\Proyectos\RepoGIT\vigoroso-gym-mejorado\backend\utils\asyncHandler.js:5:19
+    at Layer.handle [as handle_request] (D:\Proyectos\RepoGIT\vigoroso-gym-mejorado\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (D:\Proyectos\RepoGIT\vigoroso-gym-mejorado\backend\node_modules\express\lib\router\route.js:149:13)
+    at isAdmin (D:\Proyectos\RepoGIT\vigoroso-gym-mejorado\backend\middleware\auth.js:34:3)
+    at Layer.handle [as handle_request] (D:\Proyectos\RepoGIT\vigoroso-gym-mejorado\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (D:\Proyectos\RepoGIT\vigoroso-gym-mejorado\backend\node_modules\express\lib\router\route.js:149:13)
+    at authenticateToken (D:\Proyectos\RepoGIT\vigoroso-gym-mejorado\backend\middleware\auth.js:15:5)
+    at Layer.handle [as handle_request] (D:\Proyectos\RepoGIT\vigoroso-gym-mejorado\backend\node_modules\express\lib\router\layer.js:95:5)
+[2026-02-10 20:37:35] ERROR: Error en GET /api/usuarios:
+Error: Unknown column 'created_at' in 'field list'
+    at PromisePool.query (D:\Proyectos\RepoGIT\vigoroso-gym-mejorado\backend\node_modules\mysql2\lib\promise\pool.js:36:22)
+    at D:\Proyectos\RepoGIT\vigoroso-gym-mejorado\backend\routes\usuarios.js:25:33
+    at D:\Proyectos\RepoGIT\vigoroso-gym-mejorado\backend\utils\asyncHandler.js:5:19
+    at Layer.handle [as handle_request] (D:\Proyectos\RepoGIT\vigoroso-gym-mejorado\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (D:\Proyectos\RepoGIT\vigoroso-gym-mejorado\backend\node_modules\express\lib\router\route.js:149:13)
+    at isAdmin (D:\Proyectos\RepoGIT\vigoroso-gym-mejorado\backend\middleware\auth.js:34:3)
+    at Layer.handle [as handle_request] (D:\Proyectos\RepoGIT\vigoroso-gym-mejorado\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (D:\Proyectos\RepoGIT\vigoroso-gym-mejorado\backend\node_modules\express\lib\router\route.js:149:13)
+    at authenticateToken (D:\Proyectos\RepoGIT\vigoroso-gym-mejorado\backend\middleware\auth.js:15:5)
+    at Layer.handle [as handle_request] (D:\Proyectos\RepoGIT\vigoroso-gym-mejorado\backend\node_modules\express\lib\router\layer.js:95:5)
+[2026-02-10 20:52:02] ERROR: Error en GET /api/usuarios:
+Error: Unknown column 'created_at' in 'field list'
+    at PromisePool.query (D:\Proyectos\RepoGIT\vigoroso-gym-mejorado\backend\node_modules\mysql2\lib\promise\pool.js:36:22)
+    at D:\Proyectos\RepoGIT\vigoroso-gym-mejorado\backend\routes\usuarios.js:25:33
+    at D:\Proyectos\RepoGIT\vigoroso-gym-mejorado\backend\utils\asyncHandler.js:5:19
+    at Layer.handle [as handle_request] (D:\Proyectos\RepoGIT\vigoroso-gym-mejorado\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (D:\Proyectos\RepoGIT\vigoroso-gym-mejorado\backend\node_modules\express\lib\router\route.js:149:13)
+    at isAdmin (D:\Proyectos\RepoGIT\vigoroso-gym-mejorado\backend\middleware\auth.js:34:3)
+    at Layer.handle [as handle_request] (D:\Proyectos\RepoGIT\vigoroso-gym-mejorado\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (D:\Proyectos\RepoGIT\vigoroso-gym-mejorado\backend\node_modules\express\lib\router\route.js:149:13)
+    at authenticateToken (D:\Proyectos\RepoGIT\vigoroso-gym-mejorado\backend\middleware\auth.js:15:5)
+    at Layer.handle [as handle_request] (D:\Proyectos\RepoGIT\vigoroso-gym-mejorado\backend\node_modules\express\lib\router\layer.js:95:5)
+[2026-02-10 20:52:30] ERROR: Error en GET /api/usuarios:
+Error: Unknown column 'created_at' in 'field list'
+    at PromisePool.query (D:\Proyectos\RepoGIT\vigoroso-gym-mejorado\backend\node_modules\mysql2\lib\promise\pool.js:36:22)
+    at D:\Proyectos\RepoGIT\vigoroso-gym-mejorado\backend\routes\usuarios.js:25:33
+    at D:\Proyectos\RepoGIT\vigoroso-gym-mejorado\backend\utils\asyncHandler.js:5:19
+    at Layer.handle [as handle_request] (D:\Proyectos\RepoGIT\vigoroso-gym-mejorado\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (D:\Proyectos\RepoGIT\vigoroso-gym-mejorado\backend\node_modules\express\lib\router\route.js:149:13)
+    at isAdmin (D:\Proyectos\RepoGIT\vigoroso-gym-mejorado\backend\middleware\auth.js:34:3)
+    at Layer.handle [as handle_request] (D:\Proyectos\RepoGIT\vigoroso-gym-mejorado\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (D:\Proyectos\RepoGIT\vigoroso-gym-mejorado\backend\node_modules\express\lib\router\route.js:149:13)
+    at authenticateToken (D:\Proyectos\RepoGIT\vigoroso-gym-mejorado\backend\middleware\auth.js:15:5)
+    at Layer.handle [as handle_request] (D:\Proyectos\RepoGIT\vigoroso-gym-mejorado\backend\node_modules\express\lib\router\layer.js:95:5)
+[2026-02-10 20:52:30] ERROR: Error en GET /api/usuarios:
+Error: Unknown column 'created_at' in 'field list'
+    at PromisePool.query (D:\Proyectos\RepoGIT\vigoroso-gym-mejorado\backend\node_modules\mysql2\lib\promise\pool.js:36:22)
+    at D:\Proyectos\RepoGIT\vigoroso-gym-mejorado\backend\routes\usuarios.js:25:33
+    at D:\Proyectos\RepoGIT\vigoroso-gym-mejorado\backend\utils\asyncHandler.js:5:19
+    at Layer.handle [as handle_request] (D:\Proyectos\RepoGIT\vigoroso-gym-mejorado\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (D:\Proyectos\RepoGIT\vigoroso-gym-mejorado\backend\node_modules\express\lib\router\route.js:149:13)
+    at isAdmin (D:\Proyectos\RepoGIT\vigoroso-gym-mejorado\backend\middleware\auth.js:34:3)
+    at Layer.handle [as handle_request] (D:\Proyectos\RepoGIT\vigoroso-gym-mejorado\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (D:\Proyectos\RepoGIT\vigoroso-gym-mejorado\backend\node_modules\express\lib\router\route.js:149:13)
+    at authenticateToken (D:\Proyectos\RepoGIT\vigoroso-gym-mejorado\backend\middleware\auth.js:15:5)
+    at Layer.handle [as handle_request] (D:\Proyectos\RepoGIT\vigoroso-gym-mejorado\backend\node_modules\express\lib\router\layer.js:95:5)
+[2026-02-10 20:52:42] ERROR: Error en GET /api/usuarios:
+Error: Unknown column 'created_at' in 'field list'
+    at PromisePool.query (D:\Proyectos\RepoGIT\vigoroso-gym-mejorado\backend\node_modules\mysql2\lib\promise\pool.js:36:22)
+    at D:\Proyectos\RepoGIT\vigoroso-gym-mejorado\backend\routes\usuarios.js:25:33
+    at D:\Proyectos\RepoGIT\vigoroso-gym-mejorado\backend\utils\asyncHandler.js:5:19
+    at Layer.handle [as handle_request] (D:\Proyectos\RepoGIT\vigoroso-gym-mejorado\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (D:\Proyectos\RepoGIT\vigoroso-gym-mejorado\backend\node_modules\express\lib\router\route.js:149:13)
+    at isAdmin (D:\Proyectos\RepoGIT\vigoroso-gym-mejorado\backend\middleware\auth.js:34:3)
+    at Layer.handle [as handle_request] (D:\Proyectos\RepoGIT\vigoroso-gym-mejorado\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (D:\Proyectos\RepoGIT\vigoroso-gym-mejorado\backend\node_modules\express\lib\router\route.js:149:13)
+    at authenticateToken (D:\Proyectos\RepoGIT\vigoroso-gym-mejorado\backend\middleware\auth.js:15:5)
+    at Layer.handle [as handle_request] (D:\Proyectos\RepoGIT\vigoroso-gym-mejorado\backend\node_modules\express\lib\router\layer.js:95:5)
+[2026-02-10 20:54:16] INFO: Servidor iniciado en puerto 3001
+[2026-02-10 20:54:16] INFO: Entorno: development
+[2026-02-10 20:57:04] INFO: Login exitoso - Participante: fabraidee@gmail.com (ID: 2)
+[2026-02-10 20:57:29] INFO: Login exitoso - Usuario: admin@gmail.com (ID: 1)
+[2026-02-10 20:57:41] INFO: Login exitoso - Usuario: entrenador@gmail.com (ID: 3)
+[2026-02-10 20:59:53] INFO: Login exitoso - Usuario: admin@gmail.com (ID: 1)
+[2026-02-10 21:03:29] INFO: Servidor iniciado en puerto 3001
+[2026-02-10 21:03:29] INFO: Entorno: development
+[2026-02-10 21:21:09] INFO: Servidor iniciado en puerto 3001
+[2026-02-10 21:21:09] INFO: Entorno: development
+[2026-02-10 21:31:20] INFO: Servidor iniciado en puerto 3001
+[2026-02-10 21:31:20] INFO: Entorno: development
+[2026-02-10 21:37:40] INFO: Login exitoso - Usuario: admin@gmail.com (ID: 1)
+[2026-02-10 21:49:35] INFO: Servidor iniciado en puerto 3001
+[2026-02-10 21:49:35] INFO: Entorno: development
+[2026-02-10 22:04:13] INFO: Servidor iniciado en puerto 3001
+[2026-02-10 22:04:13] INFO: Entorno: development
+[2026-02-10 22:05:12] INFO: Login exitoso - Usuario: admin@gmail.com (ID: 1)
+[2026-02-10 22:08:03] INFO: Login exitoso - Usuario: admin@gmail.com (ID: 1)
+[2026-02-10 22:08:48] WARN: Contraseña incorrecta para usuario: entrenador@gmail.com
+[2026-02-10 22:09:17] INFO: Login exitoso - Usuario: entrenador@gmail.com (ID: 3)
+[2026-02-10 22:10:27] WARN: Intento de login fallido para usuario: fabraidee@gmail.com
+[2026-02-10 22:10:54] INFO: Login exitoso - Participante: fabraidee@gmail.com (ID: 2)
+[2026-02-10 22:15:41] INFO: Login exitoso - Usuario: entrenador@gmail.com (ID: 3)
+[2026-02-10 22:16:37] INFO: Login exitoso - Participante: fabraidee@gmail.com (ID: 2)
+[2026-02-11 08:58:39] INFO: Login exitoso - Usuario: entrenador@gmail.com (ID: 3)
+[2026-02-11 08:58:53] INFO: Login exitoso - Participante: fabraidee@gmail.com (ID: 2)
+[2026-02-11 08:59:47] INFO: Login exitoso - Usuario: admin@gmail.com (ID: 1)
+[2026-02-11 09:00:03] INFO: Login exitoso - Usuario: entrenador@gmail.com (ID: 3)
+[2026-02-11 09:14:14] WARN: Intento de login fallido para participante: admin@gmail.com
+[2026-02-11 09:14:31] INFO: Login exitoso - Usuario: admin@gmail.com (ID: 1)
+[2026-02-11 09:16:01] INFO: Login exitoso - Usuario: entrenador@gmail.com (ID: 3)
+[2026-02-11 10:43:18] INFO: Login exitoso - Participante: anny21@gmail.com (ID: 4)
+[2026-02-11 10:43:36] INFO: Login exitoso - Participante: fabraidee@gmail.com (ID: 2)
+[2026-02-11 11:17:36] WARN: Contraseña incorrecta para participante: fabraidee@gmail.com
+[2026-02-11 11:18:19] WARN: Intento de login fallido para usuario: fabraidee@gmail.com
+[2026-02-11 11:18:42] INFO: Login exitoso - Participante: fabraidee@gmail.com (ID: 2)
+[2026-02-11 11:23:35] INFO: Login exitoso - Participante: fabraidee@gmail.com (ID: 2)
+[2026-02-11 16:05:17] INFO: Servidor iniciado en puerto 3001
+[2026-02-11 16:05:17] INFO: Entorno: development

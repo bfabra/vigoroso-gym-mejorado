@@ -218,7 +218,7 @@ function ParticipantDashboard({ user, onLogout }) {
   };
 
   return (
-    <div className="dashboard">
+    <div className="dashboard participant-dashboard">
       <header className="dashboard-header">
         <div className="header-content">
           <div className="header-left">

@@ -1626,4 +1626,35 @@ body {
     flex-direction: column;
     align-items: flex-start;
   }
+
+  .credentials-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ============= PANEL DIFERENCIADO: ADMINISTRADOR ============= */
+.admin-dashboard .dashboard-header {
+  border-bottom-color: rgba(245, 158, 11, 0.3);
+}
+
+.admin-dashboard .header-subtitle {
+  color: var(--warning);
+}
+
+/* ============= PANEL DIFERENCIADO: ENTRENADOR ============= */
+.trainer-dashboard .dashboard-header {
+  border-bottom-color: rgba(16, 185, 129, 0.3);
+}
+
+.trainer-dashboard .header-subtitle {
+  color: var(--success);
+}
+
+/* ============= PANEL DIFERENCIADO: PARTICIPANTE ============= */
+.participant-dashboard .dashboard-header {
+  border-bottom-color: rgba(59, 130, 246, 0.3);
+}
+
+.participant-dashboard .header-subtitle {
+  color: var(--info);
 }
