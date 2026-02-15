@@ -3,6 +3,8 @@ const cors = require('cors');
 const helmet = require('helmet');
 const morgan = require('morgan');
 const rateLimit = require('express-rate-limit');
+const path = require('path');
+const fs = require('fs');
 require('dotenv').config();
 
 // Validar variables de entorno al inicio
@@ -24,7 +26,15 @@ const app = express();
 const PORT = process.env.PORT || 3001;
 
 // Middleware de seguridad
-app.use(helmet());
+app.use(helmet({
+  crossOriginResourcePolicy: { policy: "same-origin" },
+  contentSecurityPolicy: {
+    directives: {
+      ...helmet.contentSecurityPolicy.getDefaultDirectives(),
+      "img-src": ["'self'", "data:", "blob:"],
+    },
+  },
+}));
 
 // CORS
 app.use(cors({
@@ -40,6 +50,9 @@ if (process.env.NODE_ENV === 'development') {
 // Body parser con límites de seguridad
 app.use(express.json({ limit: BODY_LIMIT }));
 app.use(express.urlencoded({ extended: true, limit: BODY_LIMIT }));
+
+// Servir archivos estáticos (imágenes de ejercicios)
+app.use('/api/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // Rate limiting global para la API
 const apiLimiter = rateLimit({
@@ -124,6 +137,13 @@ app.use((err, req, res, next) => {
 // Iniciar servidor
 async function startServer() {
   try {
+    // Crear directorio de uploads si no existe
+    const uploadsDir = path.join(__dirname, 'uploads', 'ejercicios');
+    if (!fs.existsSync(uploadsDir)) {
+      fs.mkdirSync(uploadsDir, { recursive: true });
+      logger.info('Directorio de uploads creado: ' + uploadsDir);
+    }
+
     // Probar conexión a la base de datos
     const dbConnected = await testConnection();
     

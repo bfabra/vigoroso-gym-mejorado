@@ -217,6 +217,25 @@ function ParticipantDashboard({ user, onLogout }) {
     return ejercicios.filter(e => e.dia_semana === dia).sort((a, b) => a.orden - b.orden);
   };
 
+  const MESES_ES = [
+    'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
+    'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
+  ];
+
+  const getMonthLabel = (monthStr) => {
+    const [year, month] = monthStr.split('-').map(Number);
+    return { mes: MESES_ES[month - 1], año: year };
+  };
+
+  const changeMonth = (direction) => {
+    const [year, month] = selectedMonth.split('-').map(Number);
+    let newMonth = month + direction;
+    let newYear = year;
+    if (newMonth < 1) { newMonth = 12; newYear--; }
+    if (newMonth > 12) { newMonth = 1; newYear++; }
+    setSelectedMonth(`${newYear}-${String(newMonth).padStart(2, '0')}`);
+  };
+
   return (
     <div className="dashboard participant-dashboard">
       <header className="dashboard-header">
@@ -262,24 +281,29 @@ function ParticipantDashboard({ user, onLogout }) {
 
         {activeTab === 'training' && (
           <div className="participant-training">
-            <div className="date-selector" style={{ marginBottom: '20px', display: 'flex', gap: '20px', flexWrap: 'wrap' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                <label>Mes del Plan:</label>
-                <input
-                  type="month"
-                  value={selectedMonth}
-                  onChange={(e) => setSelectedMonth(e.target.value)}
-                  style={{
-                    padding: '8px 12px',
-                    borderRadius: '6px',
-                    border: '1px solid rgba(0, 0, 0, 0.2)',
-                    fontSize: '14px',
-                    cursor: 'pointer'
-                  }}
-                />
-                <span style={{ fontSize: '13px', color: 'rgba(0, 0, 0, 0.6)' }}>
-                  ({new Date(selectedMonth + '-01').toLocaleDateString('es', { month: 'long', year: 'numeric' })})
-                </span>
+            <div className="month-selector-custom">
+              <span className="month-selector-label">Mes del Plan</span>
+              <div className="month-selector-controls">
+                <button
+                  type="button"
+                  className="month-nav-btn"
+                  onClick={() => changeMonth(-1)}
+                  aria-label="Mes anterior"
+                >
+                  &#9664;
+                </button>
+                <div className="month-display">
+                  <span className="month-display-name">{getMonthLabel(selectedMonth).mes}</span>
+                  <span className="month-display-year">{getMonthLabel(selectedMonth).año}</span>
+                </div>
+                <button
+                  type="button"
+                  className="month-nav-btn"
+                  onClick={() => changeMonth(1)}
+                  aria-label="Mes siguiente"
+                >
+                  &#9654;
+                </button>
               </div>
             </div>
 
@@ -306,65 +330,25 @@ function ParticipantDashboard({ user, onLogout }) {
                 </div>
 
                 {/* ==================== CALENTAMIENTO DIARIO ==================== */}
-                <div style={{
-                  marginBottom: '25px',
-                  padding: '20px',
-                  background: 'linear-gradient(135deg, rgba(255, 107, 53, 0.15), rgba(255, 159, 64, 0.15))',
-                  borderRadius: '8px',
-                  border: '2px solid rgba(255, 107, 53, 0.3)'
-                }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '12px' }}>
-                    <span style={{ fontSize: '24px' }}>🔥</span>
-                    <h4 style={{
-                      margin: 0,
-                      color: '#ffffff',
-                      fontSize: '17px',
-                      fontWeight: '700'
-                    }}>
-                      CALENTAMIENTO DIARIO (OBLIGATORIO)
-                    </h4>
+                <div className="calentamiento-section">
+                  <div className="calentamiento-header">
+                    <span className="calentamiento-icon">🔥</span>
+                    <h4>CALENTAMIENTO DIARIO (OBLIGATORIO)</h4>
                   </div>
-                  <p style={{
-                    margin: '0 0 12px 0',
-                    fontSize: '13px',
-                    color: 'rgba(255, 255, 255, 0.8)',
-                    fontStyle: 'italic'
-                  }}>
+                  <p className="calentamiento-tip">
                     ⚠️ Tip: El calentamiento debe hacerse SIEMPRE antes de empezar.
                   </p>
-                  <div style={{
-                    display: 'grid',
-                    gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
-                    gap: '10px'
-                  }}>
+                  <div className="calentamiento-grid">
                     {CALENTAMIENTO_DIARIO.map((ej, i) => (
-                      <div key={i} style={{
-                        padding: '12px',
-                        background: 'rgba(0, 0, 0, 0.3)',
-                        borderRadius: '6px',
-                        border: '1px solid rgba(255, 255, 255, 0.15)'
-                      }}>
-                        <div style={{
-                          fontWeight: '600',
-                          color: '#ff6b35',
-                          marginBottom: '6px',
-                          fontSize: '14px'
-                        }}>
+                      <div key={i} className="calentamiento-item">
+                        <div className="calentamiento-nombre">
                           {i + 1}. {ej.nombre}
                         </div>
-                        <div style={{
-                          fontSize: '12px',
-                          color: 'rgba(255, 255, 255, 0.7)',
-                          marginBottom: '4px'
-                        }}>
+                        <div className="calentamiento-detalle">
                           📊 {ej.series} × {ej.reps}
                         </div>
                         {ej.notas && (
-                          <div style={{
-                            fontSize: '11px',
-                            color: 'rgba(255, 255, 255, 0.6)',
-                            fontStyle: 'italic'
-                          }}>
+                          <div className="calentamiento-nota">
                             💡 {ej.notas}
                           </div>
                         )}
@@ -422,6 +406,31 @@ function ParticipantDashboard({ user, onLogout }) {
                                       📊 Historial
                                     </button>
                                   </div>
+
+                                  {(() => {
+                                    const imagenes = ejercicio.imagenes_url
+                                      ? (typeof ejercicio.imagenes_url === 'string'
+                                        ? JSON.parse(ejercicio.imagenes_url)
+                                        : ejercicio.imagenes_url)
+                                      : [];
+                                    return imagenes.length > 0 && (
+                                      <div className="exercise-images-gallery-view">
+                                        {imagenes.map((url, imgIndex) => (
+                                          <div key={imgIndex} className="exercise-image-container">
+                                            <img
+                                              src={url}
+                                              alt={`${ejercicio.nombre_ejercicio} ${imgIndex + 1}`}
+                                              className="exercise-image-full"
+                                              loading="lazy"
+                                              onClick={(e) => e.target.classList.toggle('exercise-image-expanded')}
+                                              onError={(e) => { e.target.style.display = 'none'; }}
+                                            />
+                                          </div>
+                                        ))}
+                                        <p className="exercise-image-hint">Toca una imagen para ampliar</p>
+                                      </div>
+                                    );
+                                  })()}
 
                                   <div className="exercise-log-enhanced">
                                     <div className="weight-input-group">

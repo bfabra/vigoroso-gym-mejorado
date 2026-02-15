@@ -199,11 +199,10 @@ function TrainerDashboard({ user, onLogout, setView }) {
         </div>
 
         {isAdmin && (
-          <div style={{ marginBottom: '25px', textAlign: 'center' }}>
+          <div className="admin-action-center">
             <button
               onClick={() => setShowCredentialsManager(true)}
-              className="btn-success"
-              style={{ fontSize: '16px', padding: '12px 24px' }}
+              className="btn-success btn-admin-action"
             >
               🔐 Gestionar Contraseñas y Emails
             </button>
@@ -214,7 +213,7 @@ function TrainerDashboard({ user, onLogout, setView }) {
           <div className="section-header">
             <h2>{isAdmin ? 'Gestión de Usuarios y Participantes' : 'Gestión de Participantes'}</h2>
             {isAdmin ? (
-              <div style={{ display: 'flex', gap: '0.5rem' }}>
+              <div className="button-group" style={{ flexWrap: 'wrap' }}>
                 <button
                   onClick={() => {
                     setAddType('participante');

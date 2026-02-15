@@ -73,7 +73,8 @@ function TrainingPlanManager({ participantId, userId }) {
             nombre_ejercicio: '',
             series: '',
             repeticiones: '',
-            notas: ''
+            notas: '',
+            imagenes_url: []
           });
         }
       });
@@ -87,13 +88,20 @@ function TrainingPlanManager({ participantId, userId }) {
             e.dia_semana === ejGuardado.dia_semana && e.orden === ejGuardado.orden
           );
           if (index !== -1) {
+            // Parsear imagenes_url: puede venir como string JSON o array
+            let imagenesUrl = [];
+            if (ejGuardado.imagenes_url) {
+              imagenesUrl = typeof ejGuardado.imagenes_url === 'string'
+                ? JSON.parse(ejGuardado.imagenes_url)
+                : ejGuardado.imagenes_url;
+            }
             todosEjercicios[index] = {
               ...ejGuardado,
-              // Asegurar que todos los campos sean strings
               nombre_ejercicio: String(ejGuardado.nombre_ejercicio || ''),
               series: String(ejGuardado.series || ''),
               repeticiones: String(ejGuardado.repeticiones || ''),
-              notas: String(ejGuardado.notas || '')
+              notas: String(ejGuardado.notas || ''),
+              imagenes_url: imagenesUrl
             };
           }
         });
@@ -124,7 +132,8 @@ function TrainingPlanManager({ participantId, userId }) {
             nombre_ejercicio: '',
             series: '',
             repeticiones: '',
-            notas: ''
+            notas: '',
+            imagenes_url: []
           });
         }
       });
@@ -198,6 +207,33 @@ function TrainingPlanManager({ participantId, userId }) {
     setShowEjerciciosList(null);
   };
 
+  const handleImageUpload = async (dia, orden, file) => {
+    try {
+      const ejercicio = ejercicios.find(e => e.dia_semana === dia && e.orden === orden);
+      const currentImages = ejercicio?.imagenes_url || [];
+      if (currentImages.length >= 3) {
+        alert('Máximo 3 imágenes por ejercicio');
+        return;
+      }
+      const result = await entrenamientoService.subirImagenEjercicio(file);
+      updateEjercicio(dia, orden, 'imagenes_url', [...currentImages, result.imagen_url]);
+    } catch (error) {
+      console.error('Error subiendo imagen:', error);
+      alert('Error al subir imagen: ' + (error.response?.data?.error || error.message));
+    }
+  };
+
+  const handleImageRemove = async (dia, orden, imagen_url, index) => {
+    try {
+      await entrenamientoService.eliminarImagenEjercicio(imagen_url);
+    } catch (error) {
+      console.error('Error eliminando imagen del servidor:', error);
+    }
+    const ejercicio = ejercicios.find(e => e.dia_semana === dia && e.orden === orden);
+    const newImages = (ejercicio?.imagenes_url || []).filter((_, i) => i !== index);
+    updateEjercicio(dia, orden, 'imagenes_url', newImages);
+  };
+
   const aplicarPlantilla = (dia, plantillaNombre) => {
     try {
       console.log('🔵 INICIO aplicarPlantilla');
@@ -269,14 +305,15 @@ function TrainingPlanManager({ participantId, userId }) {
 
             ejerciciosActualizados++;
 
-            // Crear nuevo objeto con datos de la plantilla
+            // Crear nuevo objeto con datos de la plantilla (preservar imagen existente)
             nuevosEjercicios.push({
               dia_semana: dia,
               orden: ejercicio.orden,
               nombre_ejercicio: String(datosPlantilla.nombre || ''),
               series: String(datosPlantilla.series || ''),
               repeticiones: String(datosPlantilla.reps || ''),
-              notas: String(datosPlantilla.notas || '')
+              notas: String(datosPlantilla.notas || ''),
+              imagenes_url: ejercicio.imagenes_url || []
             });
           } else {
             console.warn(`⚠️ No hay datos de plantilla para orden ${ejercicio.orden}`);
@@ -385,28 +422,17 @@ function TrainingPlanManager({ participantId, userId }) {
       <div className="plan-header">
         <div>
           <h2>Plan de Entrenamiento</h2>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '15px', marginTop: '10px' }}>
-            <label style={{ fontSize: '14px', color: 'rgba(255, 255, 255, 0.8)' }}>
-              Seleccionar mes:
-            </label>
+          <div className="plan-month-selector">
+            <label>Seleccionar mes:</label>
             <input
               type="month"
               value={selectedMonth}
               onChange={(e) => {
                 setSelectedMonth(e.target.value);
-                setEditing(false); // Salir del modo edición al cambiar de mes
-              }}
-              style={{
-                padding: '8px 12px',
-                borderRadius: '6px',
-                border: '1px solid rgba(255, 255, 255, 0.2)',
-                background: 'rgba(255, 255, 255, 0.1)',
-                color: '#ffffff',
-                fontSize: '14px',
-                cursor: 'pointer'
+                setEditing(false);
               }}
             />
-            <span style={{ fontSize: '14px', color: 'rgba(255, 255, 255, 0.6)' }}>
+            <span className="plan-month">
               ({new Date(selectedMonth + '-01').toLocaleDateString('es', { month: 'long', year: 'numeric' })})
             </span>
           </div>
@@ -534,7 +560,7 @@ function TrainingPlanManager({ participantId, userId }) {
                 📋 Plantillas de {selectedCategory}:
               </h4>
 
-              <div style={{display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '15px'}}>
+              <div className="plantillas-grid" style={{display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(280px, 100%), 1fr))', gap: '15px'}}>
                 {Object.keys(PLANTILLAS_POR_CATEGORIA[selectedCategory] || {}).map(plantillaNombre => {
                   const plantilla = PLANTILLAS_POR_CATEGORIA[selectedCategory][plantillaNombre];
                   return (
@@ -631,10 +657,10 @@ function TrainingPlanManager({ participantId, userId }) {
             borderRadius: '8px',
             border: '1px solid rgba(255, 255, 255, 0.1)'
           }}>
-            <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
+            <div className="plan-progress-bar">
               <div>
                 <strong style={{color: '#ffffff', fontSize: '14px'}}>📊 Progreso del Plan:</strong>
-                <div style={{marginTop: '8px', display: 'flex', gap: '15px', flexWrap: 'wrap'}}>
+                <div className="plan-progress-days" style={{marginTop: '8px', display: 'flex', gap: '15px', flexWrap: 'wrap'}}>
                   {dias.map(dia => {
                     const count = countEjerciciosLlenos(dia);
                     return (
@@ -817,6 +843,54 @@ function TrainingPlanManager({ participantId, userId }) {
                             disabled={!editing}
                             placeholder="Instrucciones específicas, técnica, etc..."
                           />
+                        </div>
+
+                        <div className="exercise-field exercise-field-full">
+                          <label>Imágenes de referencia ({(ejercicio.imagenes_url || []).length}/3)</label>
+                          <div className="exercise-images-gallery">
+                            {(ejercicio.imagenes_url || []).map((url, imgIndex) => (
+                              <div key={imgIndex} className="exercise-image-preview">
+                                <img
+                                  src={url}
+                                  alt={`${ejercicio.nombre_ejercicio || 'Ejercicio'} ${imgIndex + 1}`}
+                                  className="exercise-image-thumb"
+                                  loading="lazy"
+                                  onError={(e) => { e.target.style.display = 'none'; }}
+                                />
+                                {editing && (
+                                  <button
+                                    type="button"
+                                    className="btn-remove-image"
+                                    onClick={() => handleImageRemove(dia, ejercicio.orden, url, imgIndex)}
+                                  >
+                                    Eliminar
+                                  </button>
+                                )}
+                              </div>
+                            ))}
+                            {editing && (ejercicio.imagenes_url || []).length < 3 && (
+                              <div className="exercise-image-upload">
+                                <input
+                                  type="file"
+                                  accept="image/jpeg,image/jpg,image/gif"
+                                  id={`img-${dia}-${ejercicio.orden}`}
+                                  style={{ display: 'none' }}
+                                  onChange={(e) => {
+                                    if (e.target.files[0]) {
+                                      handleImageUpload(dia, ejercicio.orden, e.target.files[0]);
+                                      e.target.value = '';
+                                    }
+                                  }}
+                                />
+                                <label
+                                  htmlFor={`img-${dia}-${ejercicio.orden}`}
+                                  className="btn-upload-image"
+                                >
+                                  + Subir imagen (JPG/GIF, max 5MB)
+                                </label>
+                              </div>
+                            )}
+                          </div>
                         </div>
                       </div>
                     </div>

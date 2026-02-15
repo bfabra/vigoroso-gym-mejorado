@@ -1,4 +1,6 @@
 const { pool } = require('../config/database');
+const fs = require('fs');
+const path = require('path');
 
 // Obtener plan de entrenamiento por participante y mes
 exports.obtenerPlanEntrenamiento = async (req, res) => {
@@ -61,12 +63,13 @@ exports.guardarPlanEntrenamiento = async (req, res) => {
         ej.nombre_ejercicio,
         ej.series,
         ej.repeticiones,
-        ej.notas
+        ej.notas,
+        ej.imagenes_url ? JSON.stringify(ej.imagenes_url) : null
       ]);
 
       await connection.query(
         `INSERT INTO ejercicios_plan
-         (plan_id, dia_semana, orden, nombre_ejercicio, series, repeticiones, notas)
+         (plan_id, dia_semana, orden, nombre_ejercicio, series, repeticiones, notas, imagenes_url)
          VALUES ?`,
         [ejerciciosValues]
       );
@@ -217,5 +220,55 @@ exports.eliminarRegistro = async (req, res) => {
   } catch (error) {
     console.error('Error eliminando registro:', error);
     res.status(500).json({ error: 'Error en el servidor' });
+  }
+};
+
+// Subir imagen de ejercicio
+exports.subirImagenEjercicio = async (req, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({ error: 'No se proporcionó imagen' });
+    }
+
+    const imagen_url = `/api/uploads/ejercicios/${req.file.filename}`;
+
+    res.json({
+      message: 'Imagen subida exitosamente',
+      imagen_url: imagen_url,
+      filename: req.file.filename
+    });
+  } catch (error) {
+    console.error('Error subiendo imagen:', error);
+    res.status(500).json({ error: 'Error al subir la imagen' });
+  }
+};
+
+// Eliminar imagen de ejercicio
+exports.eliminarImagenEjercicio = async (req, res) => {
+  try {
+    const { imagen_url } = req.body;
+
+    if (!imagen_url) {
+      return res.status(400).json({ error: 'No se proporcionó URL de imagen' });
+    }
+
+    const filename = path.basename(imagen_url);
+    const filePath = path.join(__dirname, '..', 'uploads', 'ejercicios', filename);
+
+    // Validar que la ruta resuelta está dentro del directorio de uploads
+    const uploadsDir = path.resolve(path.join(__dirname, '..', 'uploads', 'ejercicios'));
+    const resolvedPath = path.resolve(filePath);
+    if (!resolvedPath.startsWith(uploadsDir)) {
+      return res.status(400).json({ error: 'Ruta de archivo inválida' });
+    }
+
+    if (fs.existsSync(filePath)) {
+      fs.unlinkSync(filePath);
+    }
+
+    res.json({ message: 'Imagen eliminada exitosamente' });
+  } catch (error) {
+    console.error('Error eliminando imagen:', error);
+    res.status(500).json({ error: 'Error al eliminar la imagen' });
   }
 };

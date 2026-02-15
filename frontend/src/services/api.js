@@ -226,6 +226,24 @@ export const entrenamientoService = {
     const response = await api.delete(`/entrenamiento/registro/${id}`);
     return response.data;
   },
+
+  subirImagenEjercicio: async (file) => {
+    const formData = new FormData();
+    formData.append('imagen', file);
+    const response = await api.post('/entrenamiento/ejercicio/imagen', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+    return response.data;
+  },
+
+  eliminarImagenEjercicio: async (imagen_url) => {
+    const response = await api.delete('/entrenamiento/ejercicio/imagen', {
+      data: { imagen_url }
+    });
+    return response.data;
+  },
 };
 
 // ============= NUTRICIÓN =============

@@ -70,9 +70,6 @@ function LoginView({ onLogin, loading, error }) {
             {loading ? 'INGRESANDO...' : 'INGRESAR'}
           </button>
 
-          <div className="login-footer">
-            <p>Demo: admin@gmail.com / admin123</p>
-          </div>
         </form>
       </div>
     </div>

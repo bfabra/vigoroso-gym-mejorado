@@ -84,6 +84,7 @@ async function initDatabase() {
         series VARCHAR(20),
         repeticiones VARCHAR(20),
         notas TEXT,
+        imagenes_url TEXT DEFAULT NULL,
         FOREIGN KEY (plan_id) REFERENCES planes_entrenamiento(id) ON DELETE CASCADE,
         INDEX idx_plan_dia (plan_id, dia_semana)
       )

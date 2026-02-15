@@ -504,3 +504,65 @@ Error: Unknown column 'created_at' in 'field list'
 [2026-02-11 11:23:35] INFO: Login exitoso - Participante: fabraidee@gmail.com (ID: 2)
 [2026-02-11 16:05:17] INFO: Servidor iniciado en puerto 3001
 [2026-02-11 16:05:17] INFO: Entorno: development
+[2026-02-14 18:34:34] INFO: Servidor iniciado en puerto 3001
+[2026-02-14 18:34:34] INFO: Entorno: development
+[2026-02-14 18:35:04] INFO: Login exitoso - Usuario: admin@gmail.com (ID: 1)
+[2026-02-14 18:40:06] INFO: Servidor iniciado en puerto 3001
+[2026-02-14 18:40:06] INFO: Entorno: development
+[2026-02-14 19:11:43] INFO: Login exitoso - Usuario: admin@gmail.com (ID: 1)
+[2026-02-14 19:12:05] INFO: Login exitoso - Participante: fabraidee@gmail.com (ID: 2)
+[2026-02-14 19:18:53] INFO: Servidor iniciado en puerto 3001
+[2026-02-14 19:18:53] INFO: Entorno: development
+[2026-02-14 19:22:32] INFO: Servidor iniciado en puerto 3001
+[2026-02-14 19:22:32] INFO: Entorno: development
+[2026-02-14 19:28:19] INFO: Servidor iniciado en puerto 3001
+[2026-02-14 19:28:19] INFO: Entorno: development
+[2026-02-14 19:33:07] INFO: Servidor iniciado en puerto 3001
+[2026-02-14 19:33:07] INFO: Entorno: development
+[2026-02-14 19:33:12] INFO: Servidor iniciado en puerto 3001
+[2026-02-14 19:33:12] INFO: Entorno: development
+[2026-02-14 19:33:26] INFO: Servidor iniciado en puerto 3001
+[2026-02-14 19:33:26] INFO: Entorno: development
+[2026-02-14 19:33:32] INFO: Servidor iniciado en puerto 3001
+[2026-02-14 19:33:32] INFO: Entorno: development
+[2026-02-14 19:33:38] INFO: Servidor iniciado en puerto 3001
+[2026-02-14 19:33:38] INFO: Entorno: development
+[2026-02-14 19:33:44] INFO: Directorio de uploads creado: D:\Proyectos\RepoGIT\vigoroso-gym-mejorado\backend\uploads\ejercicios
+[2026-02-14 19:33:44] INFO: Servidor iniciado en puerto 3001
+[2026-02-14 19:33:44] INFO: Entorno: development
+[2026-02-14 19:34:04] INFO: Servidor iniciado en puerto 3001
+[2026-02-14 19:34:04] INFO: Entorno: development
+[2026-02-14 19:34:17] INFO: Servidor iniciado en puerto 3001
+[2026-02-14 19:34:17] INFO: Entorno: development
+[2026-02-14 19:34:38] INFO: Servidor iniciado en puerto 3001
+[2026-02-14 19:34:38] INFO: Entorno: development
+[2026-02-14 19:35:00] INFO: Servidor iniciado en puerto 3001
+[2026-02-14 19:35:00] INFO: Entorno: development
+[2026-02-15 13:06:03] INFO: Login exitoso - Usuario: entrenador@gmail.com (ID: 3)
+[2026-02-15 13:06:43] INFO: Servidor iniciado en puerto 3001
+[2026-02-15 13:06:43] INFO: Entorno: development
+[2026-02-15 13:07:18] INFO: Login exitoso - Usuario: entrenador@gmail.com (ID: 3)
+[2026-02-15 13:10:09] INFO: Login exitoso - Participante: fabraidee@gmail.com (ID: 2)
+[2026-02-15 13:16:44] INFO: Login exitoso - Usuario: entrenador@gmail.com (ID: 3)
+[2026-02-15 13:25:11] INFO: Login exitoso - Participante: fabraidee@gmail.com (ID: 2)
+[2026-02-15 13:26:26] WARN: Intento de login fallido para usuario: fabraidee@gmail.com
+[2026-02-15 13:26:30] WARN: Intento de login fallido para usuario: fabraidee@gmail.com
+[2026-02-15 13:26:38] INFO: Login exitoso - Participante: fabraidee@gmail.com (ID: 2)
+[2026-02-15 13:29:58] INFO: Login exitoso - Usuario: entrenador@gmail.com (ID: 3)
+[2026-02-15 13:32:53] INFO: Login exitoso - Participante: fabraidee@gmail.com (ID: 2)
+[2026-02-15 13:34:54] INFO: Login exitoso - Usuario: entrenador@gmail.com (ID: 3)
+[2026-02-15 14:14:26] INFO: Login exitoso - Usuario: entrenador@gmail.com (ID: 3)
+[2026-02-15 14:14:35] INFO: Login exitoso - Participante: fabraidee@gmail.com (ID: 2)
+[2026-02-15 14:29:19] INFO: Servidor iniciado en puerto 3001
+[2026-02-15 14:29:19] INFO: Entorno: development
+[2026-02-15 14:29:35] INFO: Servidor iniciado en puerto 3001
+[2026-02-15 14:29:35] INFO: Entorno: development
+[2026-02-15 14:35:07] INFO: Servidor iniciado en puerto 3001
+[2026-02-15 14:35:07] INFO: Entorno: development
+[2026-02-15 14:35:41] INFO: Login exitoso - Usuario: entrenador@gmail.com (ID: 3)
+[2026-02-15 14:37:20] INFO: Login exitoso - Participante: fabraidee@gmail.com (ID: 2)
+[2026-02-15 14:40:53] INFO: Login exitoso - Participante: fabraidee@gmail.com (ID: 2)
+[2026-02-15 14:41:25] INFO: Login exitoso - Usuario: entrenador@gmail.com (ID: 3)
+[2026-02-15 15:12:49] INFO: Login exitoso - Participante: fabraidee@gmail.com (ID: 2)
+[2026-02-15 15:37:28] INFO: Servidor iniciado en puerto 3001
+[2026-02-15 15:37:28] INFO: Entorno: development
