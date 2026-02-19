@@ -86,15 +86,7 @@ const idValidation = [
 // Todas las rutas requieren autenticación
 router.use(authenticateToken);
 
-// Rutas de participantes (solo entrenadores)
-router.get('/', isTrainer, participantesController.obtenerParticipantes);
-router.get('/:id', idValidation, participantesController.obtenerParticipante);
-router.post('/', isTrainer, crearParticipanteValidation, participantesController.crearParticipante);
-router.put('/:id', isTrainer, actualizarParticipanteValidation, participantesController.actualizarParticipante);
-router.delete('/:id', isTrainer, idValidation, participantesController.eliminarParticipante);
-router.patch('/:id/cambiar-password', isTrainer, cambiarPasswordValidation, participantesController.cambiarPassword);
-
-// Ruta para que el participante cambie su propia contraseña (verificando la actual)
+// Rutas de auto-gestión del participante (deben ir ANTES de /:id para evitar colisión)
 router.patch('/mi-cuenta/cambiar-password',
   body('password_actual').notEmpty().withMessage('La contraseña actual es requerida'),
   body('password_nueva')
@@ -104,7 +96,6 @@ router.patch('/mi-cuenta/cambiar-password',
   participantesController.cambiarPasswordPropia
 );
 
-// Ruta para que el participante actualice su email (verificando contraseña)
 router.patch('/mi-cuenta/cambiar-email',
   body('password').notEmpty().withMessage('La contraseña es requerida'),
   body('nuevo_email')
@@ -114,6 +105,14 @@ router.patch('/mi-cuenta/cambiar-email',
   handleValidationErrors,
   participantesController.cambiarEmailPropio
 );
+
+// Rutas de participantes (solo entrenadores)
+router.get('/', isTrainer, participantesController.obtenerParticipantes);
+router.get('/:id', idValidation, participantesController.obtenerParticipante);
+router.post('/', isTrainer, crearParticipanteValidation, participantesController.crearParticipante);
+router.put('/:id', isTrainer, actualizarParticipanteValidation, participantesController.actualizarParticipante);
+router.delete('/:id', isTrainer, idValidation, participantesController.eliminarParticipante);
+router.patch('/:id/cambiar-password', isTrainer, cambiarPasswordValidation, participantesController.cambiarPassword);
 
 // Ruta para admin: cambiar email de cualquier participante
 router.patch('/:id/cambiar-email', isAdmin,
