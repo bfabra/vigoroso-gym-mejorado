@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { participantesService, usuariosService, authService } from '../../services/api';
+import { participantesService, usuariosService, authService, solicitudesService } from '../../services/api';
 import {
   DumbbellIcon,
   LogOutIcon,
@@ -37,14 +37,76 @@ function TrainerDashboard({ user, onLogout, setView }) {
   const [selectedParticipant, setSelectedParticipant] = useState(null);
   const [showCredentialsManager, setShowCredentialsManager] = useState(false);
 
+  // Solicitudes de registro
+  const [solicitudes, setSolicitudes] = useState([]);
+  const [solicitudesEstado, setSolicitudesEstado] = useState('pendiente');
+  const [solicitudesPendienteCount, setSolicitudesPendienteCount] = useState(0);
+  const [showRechazarModal, setShowRechazarModal] = useState(false);
+  const [solicitudArechazar, setSolicitudArechazar] = useState(null);
+  const [motivoRechazo, setMotivoRechazo] = useState('');
+  const [solicitudesLoading, setSolicitudesLoading] = useState(false);
+
   const isAdmin = user.rol === 'admin';
 
   useEffect(() => {
     loadParticipantes();
     if (isAdmin) {
       loadUsuarios();
+      loadSolicitudesPendienteCount();
     }
   }, [isAdmin]);
+
+  const loadSolicitudes = async (estado) => {
+    setSolicitudesLoading(true);
+    try {
+      const data = await solicitudesService.listar(estado);
+      setSolicitudes(data);
+    } catch (error) {
+      console.error('Error cargando solicitudes:', error);
+    } finally {
+      setSolicitudesLoading(false);
+    }
+  };
+
+  const loadSolicitudesPendienteCount = async () => {
+    try {
+      const data = await solicitudesService.listar('pendiente');
+      setSolicitudesPendienteCount(data.length);
+    } catch (error) {
+      console.error('Error cargando conteo de solicitudes:', error);
+    }
+  };
+
+  const handleAprobar = async (id) => {
+    if (!window.confirm('¿Aprobar esta solicitud y crear el participante?')) return;
+    try {
+      await solicitudesService.aprobar(id);
+      await loadSolicitudes(solicitudesEstado);
+      await loadSolicitudesPendienteCount();
+      await loadParticipantes();
+    } catch (error) {
+      alert(error.response?.data?.error || 'Error al aprobar la solicitud');
+    }
+  };
+
+  const handleAbrirRechazo = (solicitud) => {
+    setSolicitudArechazar(solicitud);
+    setMotivoRechazo('');
+    setShowRechazarModal(true);
+  };
+
+  const handleConfirmarRechazo = async () => {
+    if (!solicitudArechazar) return;
+    try {
+      await solicitudesService.rechazar(solicitudArechazar.id, motivoRechazo);
+      setShowRechazarModal(false);
+      setSolicitudArechazar(null);
+      await loadSolicitudes(solicitudesEstado);
+      await loadSolicitudesPendienteCount();
+    } catch (error) {
+      alert(error.response?.data?.error || 'Error al rechazar la solicitud');
+    }
+  };
 
   const loadParticipantes = async () => {
     try {
@@ -215,6 +277,39 @@ function TrainerDashboard({ user, onLogout, setView }) {
             <DumbbellIcon />
             <span>Plantillas</span>
           </button>
+          {isAdmin && (
+            <button
+              className={`tab ${activeSection === 'solicitudes' ? 'active' : ''}`}
+              onClick={() => {
+                setActiveSection('solicitudes');
+                loadSolicitudes(solicitudesEstado);
+              }}
+              style={{ position: 'relative' }}
+            >
+              <UserIcon />
+              <span>Solicitudes</span>
+              {solicitudesPendienteCount > 0 && (
+                <span style={{
+                  position: 'absolute',
+                  top: '4px',
+                  right: '4px',
+                  background: '#ef4444',
+                  color: '#fff',
+                  borderRadius: '50%',
+                  width: '18px',
+                  height: '18px',
+                  fontSize: '11px',
+                  fontWeight: 'bold',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  lineHeight: 1
+                }}>
+                  {solicitudesPendienteCount > 99 ? '99+' : solicitudesPendienteCount}
+                </span>
+              )}
+            </button>
+          )}
         </div>
 
         {/* Sección de Catálogo de Ejercicios */}
@@ -232,6 +327,149 @@ function TrainerDashboard({ user, onLogout, setView }) {
             >
               🔐 Gestionar Contraseñas y Emails
             </button>
+          </div>
+        )}
+
+        {/* Sección de Solicitudes de Registro */}
+        {activeSection === 'solicitudes' && isAdmin && (
+          <div className="participants-section">
+            <div className="section-header">
+              <h2>Solicitudes de Registro</h2>
+            </div>
+
+            {/* Sub-tabs de estado */}
+            <div className="tabs" style={{ marginBottom: '1rem' }}>
+              {['pendiente', 'aprobado', 'rechazado'].map((estado) => (
+                <button
+                  key={estado}
+                  className={`tab ${solicitudesEstado === estado ? 'active' : ''}`}
+                  onClick={() => {
+                    setSolicitudesEstado(estado);
+                    loadSolicitudes(estado);
+                  }}
+                >
+                  {estado === 'pendiente' ? 'Pendientes' : estado === 'aprobado' ? 'Aprobadas' : 'Rechazadas'}
+                  {estado === 'pendiente' && solicitudesPendienteCount > 0 && (
+                    <span style={{
+                      marginLeft: '6px',
+                      background: '#ef4444',
+                      color: '#fff',
+                      borderRadius: '10px',
+                      padding: '1px 6px',
+                      fontSize: '11px',
+                      fontWeight: 'bold'
+                    }}>
+                      {solicitudesPendienteCount}
+                    </span>
+                  )}
+                </button>
+              ))}
+            </div>
+
+            {solicitudesLoading ? (
+              <p style={{ color: 'var(--text-secondary)', textAlign: 'center', padding: '2rem' }}>Cargando...</p>
+            ) : solicitudes.length === 0 ? (
+              <div className="empty-state">
+                <UserIcon />
+                <p>No hay solicitudes {solicitudesEstado === 'pendiente' ? 'pendientes' : solicitudesEstado === 'aprobado' ? 'aprobadas' : 'rechazadas'}</p>
+              </div>
+            ) : (
+              <div className="participants-grid">
+                {solicitudes.map((sol) => (
+                  <div key={sol.id} className="participant-card" style={{ cursor: 'default' }}>
+                    <div className="participant-header">
+                      <div className="participant-avatar" style={{
+                        background: sol.estado === 'aprobado'
+                          ? 'linear-gradient(135deg, #10b981, #059669)'
+                          : sol.estado === 'rechazado'
+                          ? 'linear-gradient(135deg, #ef4444, #dc2626)'
+                          : 'linear-gradient(135deg, #f59e0b, #d97706)'
+                      }}>
+                        <UserIcon />
+                      </div>
+                      <div className="participant-info">
+                        <h3>{sol.nombre}</h3>
+                        <p>{sol.email}</p>
+                      </div>
+                    </div>
+
+                    <div className="participant-tags" style={{ marginBottom: '0.5rem' }}>
+                      <span className={`tag ${sol.estado === 'aprobado' ? 'tag-green' : sol.estado === 'rechazado' ? 'tag-orange' : 'tag-blue'}`}>
+                        {sol.estado === 'pendiente' ? '⏳ Pendiente' : sol.estado === 'aprobado' ? '✅ Aprobado' : '❌ Rechazado'}
+                      </span>
+                      {sol.genero && <span className="tag tag-blue">{sol.genero === 'M' ? 'Masculino' : sol.genero === 'F' ? 'Femenino' : 'Otro'}</span>}
+                    </div>
+
+                    <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', marginBottom: '0.5rem' }}>
+                      {sol.telefono && <div>📞 {sol.telefono}</div>}
+                      {sol.fecha_nacimiento && <div>🎂 {new Date(sol.fecha_nacimiento).toLocaleDateString('es-CO')}</div>}
+                      <div>📅 Solicitado: {new Date(sol.fecha_solicitud).toLocaleDateString('es-CO')}</div>
+                      {sol.motivo_rechazo && (
+                        <div style={{ marginTop: '0.25rem', color: '#ef4444' }}>
+                          Motivo: {sol.motivo_rechazo}
+                        </div>
+                      )}
+                    </div>
+
+                    {sol.estado === 'pendiente' && (
+                      <div className="form-actions" style={{ marginTop: '0.5rem' }}>
+                        <button
+                          className="btn-success"
+                          style={{ fontSize: '0.8rem', padding: '0.4rem 0.75rem' }}
+                          onClick={() => handleAprobar(sol.id)}
+                        >
+                          ✅ Aprobar
+                        </button>
+                        <button
+                          className="btn-danger"
+                          style={{ fontSize: '0.8rem', padding: '0.4rem 0.75rem' }}
+                          onClick={() => handleAbrirRechazo(sol)}
+                        >
+                          ❌ Rechazar
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Modal de rechazo */}
+        {showRechazarModal && (
+          <div style={{
+            position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.6)',
+            display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000
+          }}>
+            <div style={{
+              background: 'var(--card-bg, #1e1e2e)', borderRadius: '12px',
+              padding: '1.5rem', width: '90%', maxWidth: '440px',
+              boxShadow: '0 8px 32px rgba(0,0,0,0.4)'
+            }}>
+              <h3 style={{ color: 'var(--text-primary)', marginBottom: '0.5rem' }}>Rechazar solicitud</h3>
+              <p style={{ color: 'var(--text-secondary)', marginBottom: '1rem', fontSize: '0.9rem' }}>
+                {solicitudArechazar?.nombre} — {solicitudArechazar?.email}
+              </p>
+              <div className="form-group">
+                <label>Motivo del rechazo (opcional)</label>
+                <textarea
+                  value={motivoRechazo}
+                  onChange={(e) => setMotivoRechazo(e.target.value)}
+                  placeholder="Indica el motivo del rechazo..."
+                  rows={3}
+                  style={{ width: '100%', resize: 'vertical' }}
+                />
+              </div>
+              <div className="form-actions" style={{ marginTop: '1rem' }}>
+                <button className="btn-danger" onClick={handleConfirmarRechazo}>
+                  Confirmar Rechazo
+                </button>
+                <button className="btn-secondary" onClick={() => setShowRechazarModal(false)}>
+                  Cancelar
+                </button>
+              </div>
+            </div>
           </div>
         )}
 

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { DumbbellIcon } from '../common/Icons';
 
-function LoginView({ onLogin, loading, error }) {
+function LoginView({ onLogin, loading, error, onSolicitarAcceso }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isParticipant, setIsParticipant] = useState(false);
@@ -69,6 +69,26 @@ function LoginView({ onLogin, loading, error }) {
           <button type="submit" className="btn-primary" disabled={loading}>
             {loading ? 'INGRESANDO...' : 'INGRESAR'}
           </button>
+
+          {onSolicitarAcceso && (
+            <div style={{ textAlign: 'center', marginTop: '1rem' }}>
+              <button
+                type="button"
+                onClick={onSolicitarAcceso}
+                style={{
+                  background: 'none',
+                  border: 'none',
+                  color: 'var(--primary)',
+                  cursor: 'pointer',
+                  fontSize: '0.875rem',
+                  textDecoration: 'underline',
+                  padding: 0
+                }}
+              >
+                Solicitar acceso al gimnasio
+              </button>
+            </div>
+          )}
 
         </form>
       </div>

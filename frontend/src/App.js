@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { authService } from './services/api';
 import LoginView from './components/auth/LoginView';
+import SolicitudRegistroForm from './components/auth/SolicitudRegistroForm';
 import TrainerDashboard from './components/trainer/TrainerDashboard';
 import ParticipantDashboard from './components/participant/ParticipantDashboard';
 import './App.css';
@@ -51,7 +52,15 @@ function App() {
   return (
     <div className="App">
       {view === 'login' && (
-        <LoginView onLogin={handleLogin} loading={loading} error={error} />
+        <LoginView
+          onLogin={handleLogin}
+          loading={loading}
+          error={error}
+          onSolicitarAcceso={() => setView('solicitud-registro')}
+        />
+      )}
+      {view === 'solicitud-registro' && (
+        <SolicitudRegistroForm onVolver={() => setView('login')} />
       )}
       {view === 'trainer-dashboard' && (
         <TrainerDashboard user={currentUser} onLogout={handleLogout} setView={setView} />

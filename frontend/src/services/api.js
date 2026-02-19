@@ -79,6 +79,11 @@ export const authService = {
     const response = await api.post('/auth/registrar-usuario', usuario);
     return response.data;
   },
+
+  solicitarCuenta: async (datos) => {
+    const response = await api.post('/auth/solicitar-cuenta', datos);
+    return response.data;
+  },
 };
 
 // ============= USUARIOS (ENTRENADORES/ADMINS) =============
@@ -499,6 +504,26 @@ export const nutricionService = {
 
   eliminarPlan: async (id) => {
     const response = await api.delete(`/nutricion/plan/${id}`);
+    return response.data;
+  },
+};
+
+// ============= SOLICITUDES DE REGISTRO =============
+
+export const solicitudesService = {
+  listar: async (estado) => {
+    const params = estado ? { estado } : {};
+    const response = await api.get('/solicitudes', { params });
+    return response.data;
+  },
+
+  aprobar: async (id) => {
+    const response = await api.post(`/solicitudes/${id}/aprobar`);
+    return response.data;
+  },
+
+  rechazar: async (id, motivo) => {
+    const response = await api.post(`/solicitudes/${id}/rechazar`, { motivo });
     return response.data;
   },
 };

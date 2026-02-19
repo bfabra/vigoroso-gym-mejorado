@@ -25,6 +25,7 @@ const nutricionRoutes = require('./routes/nutricion');
 const catalogoRoutes = require('./routes/catalogo');
 const plantillasRoutes = require('./routes/plantillas');
 const asignacionesRoutes = require('./routes/asignaciones');
+const solicitudesRoutes = require('./routes/solicitudes');
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -84,6 +85,7 @@ const authLimiter = rateLimit({
 });
 
 app.use('/api/auth/login', authLimiter);
+app.use('/api/auth/solicitar-cuenta', authLimiter);
 
 // Rutas
 app.use('/api/auth', authRoutes);
@@ -95,6 +97,7 @@ app.use('/api/nutricion', nutricionRoutes);
 app.use('/api/catalogo', catalogoRoutes);
 app.use('/api/plantillas', plantillasRoutes);
 app.use('/api/asignaciones', asignacionesRoutes);
+app.use('/api/solicitudes', solicitudesRoutes);
 
 // Ruta de health check
 app.get('/api/health', (req, res) => {
