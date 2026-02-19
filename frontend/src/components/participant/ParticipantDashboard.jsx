@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { entrenamientoService, nutricionService, participantesService } from '../../services/api';
+import { entrenamientoService, asignacionesService, nutricionService, participantesService } from '../../services/api';
 import {
   DumbbellIcon,
   LogOutIcon,
@@ -42,6 +42,8 @@ function ParticipantDashboard({ user, onLogout }) {
   const [showHistoryModal, setShowHistoryModal] = useState(false);
   const [exerciseHistory, setExerciseHistory] = useState([]);
   const [editingNotes, setEditingNotes] = useState({});
+  const [usandoNuevoSistema, setUsandoNuevoSistema] = useState(false);
+  const [snapshotDias, setSnapshotDias] = useState([]);
 
   const currentMonth = selectedMonth; // Para mantener compatibilidad
   const dias = DIAS_SEMANA;
@@ -63,6 +65,30 @@ function ParticipantDashboard({ user, onLogout }) {
 
   const loadTrainingPlan = async () => {
     try {
+      // Intentar nuevo sistema primero
+      const newData = await asignacionesService.obtenerAsignacion(user.id, currentMonth);
+      if (newData.asignacion) {
+        setUsandoNuevoSistema(true);
+        setPlan(newData.asignacion);
+        setSnapshotDias(newData.dias || []);
+        // Convertir snapshot a formato plano compatible con la UI existente
+        const ejerciciosPlanos = [];
+        (newData.dias || []).forEach(dia => {
+          (dia.ejercicios || []).forEach(ej => {
+            ejerciciosPlanos.push({
+              ...ej,
+              dia_semana: dia.dia_semana,
+              imagenes_url: [ej.imagen_1_url, ej.imagen_2_url, ej.imagen_3_url].filter(Boolean)
+            });
+          });
+        });
+        setEjercicios(ejerciciosPlanos);
+        return;
+      }
+
+      // Fallback al sistema legacy
+      setUsandoNuevoSistema(false);
+      setSnapshotDias([]);
       const data = await entrenamientoService.obtenerPlan(user.id, currentMonth);
       setPlan(data.plan);
       setEjercicios(data.ejercicios || []);
@@ -83,12 +109,21 @@ function ParticipantDashboard({ user, onLogout }) {
 
   const loadRegistros = async () => {
     try {
-      const data = await entrenamientoService.obtenerRegistros(user.id, selectedDate, selectedDate);
-      const registrosMap = {};
-      data.forEach(reg => {
-        registrosMap[reg.ejercicio_plan_id] = reg;
-      });
-      setRegistros(registrosMap);
+      if (usandoNuevoSistema) {
+        const data = await asignacionesService.obtenerRegistros(user.id, selectedDate, selectedDate);
+        const registrosMap = {};
+        data.forEach(reg => {
+          registrosMap[reg.snapshot_ejercicio_id] = reg;
+        });
+        setRegistros(registrosMap);
+      } else {
+        const data = await entrenamientoService.obtenerRegistros(user.id, selectedDate, selectedDate);
+        const registrosMap = {};
+        data.forEach(reg => {
+          registrosMap[reg.ejercicio_plan_id] = reg;
+        });
+        setRegistros(registrosMap);
+      }
     } catch (error) {
       console.error('Error cargando registros:', error);
     }
@@ -96,18 +131,34 @@ function ParticipantDashboard({ user, onLogout }) {
 
   const handleRegistrarPeso = async (ejercicioId, peso, comentarios = '') => {
     try {
-      const registro = {
-        participante_id: user.id,
-        ejercicio_plan_id: ejercicioId,
-        fecha_registro: selectedDate,
-        peso_utilizado: parseInt(peso, 10) || 0, // Convertir a entero
-        comentarios: comentarios || ''
-      };
+      if (usandoNuevoSistema) {
+        const registro = {
+          participante_id: user.id,
+          snapshot_ejercicio_id: ejercicioId,
+          fecha_registro: selectedDate,
+          peso_utilizado: parseInt(peso, 10) || 0,
+          comentarios: comentarios || ''
+        };
 
-      if (registros[ejercicioId]) {
-        await entrenamientoService.actualizarRegistro(registros[ejercicioId].id, registro);
+        if (registros[ejercicioId]) {
+          await asignacionesService.actualizarRegistro(registros[ejercicioId].id, registro);
+        } else {
+          await asignacionesService.registrarEntrenamiento(registro);
+        }
       } else {
-        await entrenamientoService.registrarEntrenamiento(registro);
+        const registro = {
+          participante_id: user.id,
+          ejercicio_plan_id: ejercicioId,
+          fecha_registro: selectedDate,
+          peso_utilizado: parseInt(peso, 10) || 0,
+          comentarios: comentarios || ''
+        };
+
+        if (registros[ejercicioId]) {
+          await entrenamientoService.actualizarRegistro(registros[ejercicioId].id, registro);
+        } else {
+          await entrenamientoService.registrarEntrenamiento(registro);
+        }
       }
 
       loadRegistros();
@@ -119,7 +170,12 @@ function ParticipantDashboard({ user, onLogout }) {
   const handleShowHistory = async (ejercicio) => {
     try {
       setSelectedExercise(ejercicio);
-      const history = await entrenamientoService.obtenerHistorialEjercicio(user.id, ejercicio.id);
+      let history;
+      if (usandoNuevoSistema) {
+        history = await asignacionesService.obtenerHistorialEjercicio(user.id, ejercicio.id);
+      } else {
+        history = await entrenamientoService.obtenerHistorialEjercicio(user.id, ejercicio.id);
+      }
       setExerciseHistory(history);
       setShowHistoryModal(true);
     } catch (error) {
@@ -213,8 +269,11 @@ function ParticipantDashboard({ user, onLogout }) {
     }
   };
 
+  const normalizeDia = (d) => d?.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+
   const getEjerciciosByDia = (dia) => {
-    return ejercicios.filter(e => e.dia_semana === dia).sort((a, b) => a.orden - b.orden);
+    const normalizado = normalizeDia(dia);
+    return ejercicios.filter(e => normalizeDia(e.dia_semana) === normalizado).sort((a, b) => a.orden - b.orden);
   };
 
   const MESES_ES = [

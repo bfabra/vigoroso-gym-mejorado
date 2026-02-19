@@ -21,6 +21,9 @@ const usuariosRoutes = require('./routes/usuarios');
 const participantesRoutes = require('./routes/participantes');
 const entrenamientoRoutes = require('./routes/entrenamiento');
 const nutricionRoutes = require('./routes/nutricion');
+const catalogoRoutes = require('./routes/catalogo');
+const plantillasRoutes = require('./routes/plantillas');
+const asignacionesRoutes = require('./routes/asignaciones');
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -87,6 +90,9 @@ app.use('/api/usuarios', usuariosRoutes);
 app.use('/api/participantes', participantesRoutes);
 app.use('/api/entrenamiento', entrenamientoRoutes);
 app.use('/api/nutricion', nutricionRoutes);
+app.use('/api/catalogo', catalogoRoutes);
+app.use('/api/plantillas', plantillasRoutes);
+app.use('/api/asignaciones', asignacionesRoutes);
 
 // Ruta de health check
 app.get('/api/health', (req, res) => {
@@ -101,13 +107,16 @@ app.get('/api/health', (req, res) => {
 app.get('/', (req, res) => {
   res.json({ 
     message: 'API Gimnasio VIGOROSO',
-    version: '1.0.0',
+    version: '2.0.0',
     endpoints: {
       auth: '/api/auth',
       usuarios: '/api/usuarios',
       participantes: '/api/participantes',
       entrenamiento: '/api/entrenamiento',
       nutricion: '/api/nutricion',
+      catalogo: '/api/catalogo',
+      plantillas: '/api/plantillas',
+      asignaciones: '/api/asignaciones',
       health: '/api/health'
     }
   });

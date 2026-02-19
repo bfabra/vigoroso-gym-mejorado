@@ -110,6 +110,156 @@ async function initDatabase() {
     `);
     console.log('✅ Tabla registros_entrenamiento creada');
 
+    // ═══════════════════════════════════════════════════
+    // SISTEMA DINÁMICO DE PLANTILLAS (nuevo)
+    // ═══════════════════════════════════════════════════
+
+    // Catálogo de ejercicios (compartido, sin duplicación)
+    await connection.query(`
+      CREATE TABLE IF NOT EXISTS catalogo_ejercicios (
+        id INT PRIMARY KEY AUTO_INCREMENT,
+        nombre VARCHAR(200) NOT NULL,
+        grupo_muscular ENUM('Pecho','Espalda','Hombros','Piernas','Brazos','Core','Cardio','Movilidad','Gluteo') NOT NULL,
+        instrucciones TEXT,
+        imagen_1_url VARCHAR(500) DEFAULT NULL,
+        imagen_2_url VARCHAR(500) DEFAULT NULL,
+        imagen_3_url VARCHAR(500) DEFAULT NULL,
+        activo BOOLEAN DEFAULT TRUE,
+        fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        fecha_actualizacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+        UNIQUE KEY unique_nombre (nombre),
+        INDEX idx_grupo_muscular (grupo_muscular)
+      )
+    `);
+    console.log('✅ Tabla catalogo_ejercicios creada');
+
+    // Plantillas reutilizables
+    await connection.query(`
+      CREATE TABLE IF NOT EXISTS plantillas (
+        id INT PRIMARY KEY AUTO_INCREMENT,
+        nombre VARCHAR(200) NOT NULL,
+        categoria ENUM('MUJERES','HOMBRES','NINOS','ADULTO_MAYOR') NOT NULL,
+        descripcion TEXT,
+        objetivo VARCHAR(200),
+        nivel ENUM('Principiante','Intermedio','Avanzado') DEFAULT 'Intermedio',
+        activo BOOLEAN DEFAULT TRUE,
+        creado_por INT,
+        fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        fecha_actualizacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+        FOREIGN KEY (creado_por) REFERENCES usuarios(id) ON DELETE SET NULL,
+        INDEX idx_categoria_activo (activo, categoria)
+      )
+    `);
+    console.log('✅ Tabla plantillas creada');
+
+    // Días de cada plantilla
+    await connection.query(`
+      CREATE TABLE IF NOT EXISTS plantilla_dias (
+        id INT PRIMARY KEY AUTO_INCREMENT,
+        plantilla_id INT NOT NULL,
+        numero_dia INT NOT NULL,
+        nombre_dia VARCHAR(100) NOT NULL,
+        descripcion TEXT,
+        FOREIGN KEY (plantilla_id) REFERENCES plantillas(id) ON DELETE CASCADE,
+        UNIQUE KEY unique_plantilla_dia (plantilla_id, numero_dia)
+      )
+    `);
+    console.log('✅ Tabla plantilla_dias creada');
+
+    // Ejercicios de cada día (referencia al catálogo)
+    await connection.query(`
+      CREATE TABLE IF NOT EXISTS plantilla_dia_ejercicios (
+        id INT PRIMARY KEY AUTO_INCREMENT,
+        plantilla_dia_id INT NOT NULL,
+        ejercicio_id INT NOT NULL,
+        orden INT NOT NULL,
+        series VARCHAR(20),
+        repeticiones VARCHAR(20),
+        notas TEXT,
+        FOREIGN KEY (plantilla_dia_id) REFERENCES plantilla_dias(id) ON DELETE CASCADE,
+        FOREIGN KEY (ejercicio_id) REFERENCES catalogo_ejercicios(id) ON DELETE RESTRICT,
+        UNIQUE KEY unique_dia_orden (plantilla_dia_id, orden)
+      )
+    `);
+    console.log('✅ Tabla plantilla_dia_ejercicios creada');
+
+    // Asignaciones de plantilla a participante por mes
+    await connection.query(`
+      CREATE TABLE IF NOT EXISTS asignaciones_plan (
+        id INT PRIMARY KEY AUTO_INCREMENT,
+        participante_id INT NOT NULL,
+        plantilla_id INT NOT NULL,
+        mes_anio VARCHAR(7) NOT NULL,
+        notas_entrenador TEXT,
+        asignado_por INT,
+        fecha_asignacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        activo BOOLEAN DEFAULT TRUE,
+        FOREIGN KEY (participante_id) REFERENCES participantes(id) ON DELETE CASCADE,
+        FOREIGN KEY (plantilla_id) REFERENCES plantillas(id) ON DELETE RESTRICT,
+        FOREIGN KEY (asignado_por) REFERENCES usuarios(id) ON DELETE SET NULL,
+        INDEX idx_participante_mes (participante_id, mes_anio)
+      )
+    `);
+    console.log('✅ Tabla asignaciones_plan creada');
+
+    // Snapshot de días (copia inmutable al asignar)
+    await connection.query(`
+      CREATE TABLE IF NOT EXISTS plan_snapshot_dias (
+        id INT PRIMARY KEY AUTO_INCREMENT,
+        asignacion_id INT NOT NULL,
+        numero_dia INT NOT NULL,
+        nombre_dia VARCHAR(100) NOT NULL,
+        dia_semana ENUM('Lunes','Martes','Miercoles','Jueves','Viernes','Sabado') NOT NULL,
+        FOREIGN KEY (asignacion_id) REFERENCES asignaciones_plan(id) ON DELETE CASCADE,
+        UNIQUE KEY unique_asignacion_dia (asignacion_id, numero_dia)
+      )
+    `);
+    console.log('✅ Tabla plan_snapshot_dias creada');
+
+    // Snapshot de ejercicios (copia desnormalizada inmutable)
+    await connection.query(`
+      CREATE TABLE IF NOT EXISTS plan_snapshot_ejercicios (
+        id INT PRIMARY KEY AUTO_INCREMENT,
+        snapshot_dia_id INT NOT NULL,
+        ejercicio_catalogo_id INT,
+        orden INT NOT NULL,
+        nombre_ejercicio VARCHAR(200) NOT NULL,
+        series VARCHAR(20),
+        repeticiones VARCHAR(20),
+        notas TEXT,
+        imagen_1_url VARCHAR(500),
+        imagen_2_url VARCHAR(500),
+        imagen_3_url VARCHAR(500),
+        FOREIGN KEY (snapshot_dia_id) REFERENCES plan_snapshot_dias(id) ON DELETE CASCADE,
+        FOREIGN KEY (ejercicio_catalogo_id) REFERENCES catalogo_ejercicios(id) ON DELETE SET NULL,
+        UNIQUE KEY unique_snapshot_orden (snapshot_dia_id, orden)
+      )
+    `);
+    console.log('✅ Tabla plan_snapshot_ejercicios creada');
+
+    // Registros de entrenamiento v2 (vinculados a snapshots)
+    await connection.query(`
+      CREATE TABLE IF NOT EXISTS registros_entrenamiento_v2 (
+        id INT PRIMARY KEY AUTO_INCREMENT,
+        participante_id INT NOT NULL,
+        snapshot_ejercicio_id INT NOT NULL,
+        fecha_registro DATE NOT NULL,
+        peso_utilizado DECIMAL(6,2),
+        series_completadas INT,
+        repeticiones_completadas INT,
+        comentarios TEXT,
+        fecha_hora_registro TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY (participante_id) REFERENCES participantes(id) ON DELETE CASCADE,
+        FOREIGN KEY (snapshot_ejercicio_id) REFERENCES plan_snapshot_ejercicios(id) ON DELETE CASCADE,
+        INDEX idx_participante_fecha (participante_id, fecha_registro)
+      )
+    `);
+    console.log('✅ Tabla registros_entrenamiento_v2 creada');
+
+    // ═══════════════════════════════════════════════════
+    // TABLAS LEGACY (se mantienen para compatibilidad)
+    // ═══════════════════════════════════════════════════
+
     // Crear tabla de planes de nutrición
     await connection.query(`
       CREATE TABLE IF NOT EXISTS planes_nutricion (

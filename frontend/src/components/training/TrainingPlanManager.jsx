@@ -432,9 +432,7 @@ function TrainingPlanManager({ participantId, userId }) {
                 setEditing(false);
               }}
             />
-            <span className="plan-month">
-              ({new Date(selectedMonth + '-01').toLocaleDateString('es', { month: 'long', year: 'numeric' })})
-            </span>
+           
           </div>
         </div>
         {!editing ? (

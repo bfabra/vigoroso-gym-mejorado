@@ -10,9 +10,12 @@ import {
 } from '../common/Icons';
 import ManageParticipant from './ManageParticipant';
 import ManageCredentials from './ManageCredentials';
+import ExerciseCatalogManager from './ExerciseCatalogManager';
+import TemplateCatalogManager from './TemplateCatalogManager';
 
 function TrainerDashboard({ user, onLogout, setView }) {
   const [participantes, setParticipantes] = useState([]);
+  const [activeSection, setActiveSection] = useState('participantes'); // 'participantes', 'catalogo', 'plantillas'
   const [usuarios, setUsuarios] = useState([]);
   const [showAddForm, setShowAddForm] = useState(false);
   const [addType, setAddType] = useState('participante'); // 'participante' o 'usuario'
@@ -198,7 +201,30 @@ function TrainerDashboard({ user, onLogout, setView }) {
           </div>
         </div>
 
-        {isAdmin && (
+        {/* Navegación de secciones */}
+        <div className="tabs" style={{ marginBottom: '1rem' }}>
+          <button className={`tab ${activeSection === 'participantes' ? 'active' : ''}`} onClick={() => setActiveSection('participantes')}>
+            <UserIcon />
+            <span>Participantes</span>
+          </button>
+          <button className={`tab ${activeSection === 'catalogo' ? 'active' : ''}`} onClick={() => setActiveSection('catalogo')}>
+            <DumbbellIcon />
+            <span>Catálogo Ejercicios</span>
+          </button>
+          <button className={`tab ${activeSection === 'plantillas' ? 'active' : ''}`} onClick={() => setActiveSection('plantillas')}>
+            <DumbbellIcon />
+            <span>Plantillas</span>
+          </button>
+        </div>
+
+        {/* Sección de Catálogo de Ejercicios */}
+        {activeSection === 'catalogo' && <ExerciseCatalogManager />}
+
+        {/* Sección de Plantillas */}
+        {activeSection === 'plantillas' && <TemplateCatalogManager />}
+
+        {/* Sección de Participantes */}
+        {activeSection === 'participantes' && isAdmin && (
           <div className="admin-action-center">
             <button
               onClick={() => setShowCredentialsManager(true)}
@@ -209,7 +235,7 @@ function TrainerDashboard({ user, onLogout, setView }) {
           </div>
         )}
 
-        <div className="participants-section">
+        {activeSection === 'participantes' && <div className="participants-section">
           <div className="section-header">
             <h2>{isAdmin ? 'Gestión de Usuarios y Participantes' : 'Gestión de Participantes'}</h2>
             {isAdmin ? (
@@ -462,7 +488,7 @@ function TrainerDashboard({ user, onLogout, setView }) {
               ))}
             </div>
           )}
-        </div>
+        </div>}
       </main>
     </div>
   );

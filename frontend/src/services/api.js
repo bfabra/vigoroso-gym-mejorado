@@ -246,6 +246,160 @@ export const entrenamientoService = {
   },
 };
 
+// ============= CATÁLOGO DE EJERCICIOS =============
+
+export const catalogoService = {
+  listar: async (params = {}) => {
+    const response = await api.get('/catalogo', { params });
+    return response.data;
+  },
+
+  obtener: async (id) => {
+    const response = await api.get(`/catalogo/${id}`);
+    return response.data;
+  },
+
+  crear: async (ejercicio) => {
+    const response = await api.post('/catalogo', ejercicio);
+    return response.data;
+  },
+
+  actualizar: async (id, ejercicio) => {
+    const response = await api.put(`/catalogo/${id}`, ejercicio);
+    return response.data;
+  },
+
+  eliminar: async (id) => {
+    const response = await api.delete(`/catalogo/${id}`);
+    return response.data;
+  },
+
+  subirImagen: async (id, file) => {
+    const formData = new FormData();
+    formData.append('imagen', file);
+    const response = await api.post(`/catalogo/${id}/imagen`, formData, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    });
+    return response.data;
+  },
+
+  eliminarImagen: async (id, slot) => {
+    const response = await api.delete(`/catalogo/${id}/imagen/${slot}`);
+    return response.data;
+  },
+};
+
+// ============= PLANTILLAS =============
+
+export const plantillasService = {
+  listar: async (params = {}) => {
+    const response = await api.get('/plantillas', { params });
+    return response.data;
+  },
+
+  obtener: async (id) => {
+    const response = await api.get(`/plantillas/${id}`);
+    return response.data;
+  },
+
+  crear: async (plantilla) => {
+    const response = await api.post('/plantillas', plantilla);
+    return response.data;
+  },
+
+  actualizar: async (id, plantilla) => {
+    const response = await api.put(`/plantillas/${id}`, plantilla);
+    return response.data;
+  },
+
+  eliminar: async (id) => {
+    const response = await api.delete(`/plantillas/${id}`);
+    return response.data;
+  },
+
+  duplicar: async (id, nombre) => {
+    const response = await api.post(`/plantillas/${id}/duplicar`, { nombre });
+    return response.data;
+  },
+};
+
+// ============= ASIGNACIONES =============
+
+export const asignacionesService = {
+  asignar: async (asignacion) => {
+    const response = await api.post('/asignaciones', asignacion);
+    return response.data;
+  },
+
+  obtenerAsignacion: async (participante_id, mes_anio) => {
+    try {
+      const response = await api.get(`/asignaciones/participante/${participante_id}/${mes_anio}`);
+      return response.data;
+    } catch (error) {
+      if (error.response?.status === 404) {
+        return { asignacion: null, dias: [] };
+      }
+      throw error;
+    }
+  },
+
+  obtenerPlanActual: async (participante_id) => {
+    try {
+      const response = await api.get(`/asignaciones/participante/${participante_id}/actual`);
+      return response.data;
+    } catch (error) {
+      if (error.response?.status === 404) {
+        return { asignacion: null, dias: [] };
+      }
+      throw error;
+    }
+  },
+
+  obtenerHistorial: async (participante_id) => {
+    const response = await api.get(`/asignaciones/participante/${participante_id}`);
+    return response.data;
+  },
+
+  cambiar: async (id, asignacion) => {
+    const response = await api.put(`/asignaciones/${id}`, asignacion);
+    return response.data;
+  },
+
+  // Registros de entrenamiento v2
+  registrarEntrenamiento: async (registro) => {
+    const response = await api.post('/asignaciones/registro', registro);
+    return response.data;
+  },
+
+  obtenerRegistros: async (participante_id, fecha_inicio, fecha_fin) => {
+    const params = { participante_id };
+    if (fecha_inicio) params.fecha_inicio = fecha_inicio;
+    if (fecha_fin) params.fecha_fin = fecha_fin;
+    const response = await api.get('/asignaciones/registros', { params });
+    return response.data;
+  },
+
+  actualizarRegistro: async (id, registro) => {
+    const response = await api.put(`/asignaciones/registro/${id}`, registro);
+    return response.data;
+  },
+
+  eliminarRegistro: async (id) => {
+    const response = await api.delete(`/asignaciones/registro/${id}`);
+    return response.data;
+  },
+
+  obtenerHistorialEjercicio: async (participante_id, snapshot_ejercicio_id) => {
+    const response = await api.get(`/asignaciones/historial/${participante_id}/${snapshot_ejercicio_id}`);
+    return response.data;
+  },
+
+  obtenerUltimoRegistro: async (participante_id, snapshot_ejercicio_id) => {
+    const response = await api.get(`/asignaciones/ultimo-registro/${participante_id}/${snapshot_ejercicio_id}`);
+    return response.data;
+  },
+};
+
 // ============= NUTRICIÓN =============
 
 export const nutricionService = {

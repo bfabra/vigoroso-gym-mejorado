@@ -13,6 +13,11 @@
   --danger: #ef4444;
   --warning: #f59e0b;
   --info: #3b82f6;
+  /* Alias para componentes de plantillas y catálogo */
+  --bg-primary: rgba(255, 255, 255, 0.1);
+  --bg-secondary: rgba(255, 255, 255, 0.05);
+  --border-color: rgba(255, 255, 255, 0.1);
+  --accent-primary: #ff6b35;
 }
 
 /* Reset y Base */
@@ -2522,4 +2527,54 @@ body {
 
 .participant-dashboard .header-subtitle {
   color: var(--info);
+}
+
+/* ============= PLANTILLA / CATÁLOGO MANAGER ============= */
+.template-exercise-row {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 2fr auto;
+  gap: 0.4rem;
+  align-items: center;
+  margin-bottom: 0.4rem;
+  padding-left: 0.5rem;
+}
+
+.template-form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+}
+
+.catalog-form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+}
+
+/* Select option dark background (fuera de .form-group) */
+select option {
+  background: #1a1a2e;
+  color: var(--text-primary);
+}
+
+@media (max-width: 768px) {
+  .template-exercise-row {
+    grid-template-columns: 1fr 1fr;
+    gap: 0.3rem;
+  }
+
+  .template-exercise-row > span:first-child {
+    grid-column: 1 / -1;
+  }
+
+  .template-form-grid,
+  .catalog-form-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .template-exercise-row {
+    grid-template-columns: 1fr;
+  }
 }
