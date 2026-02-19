@@ -400,6 +400,80 @@ export const asignacionesService = {
   },
 };
 
+// ============= ENTRENAMIENTO V2 =============
+
+export const entrenamientoV2Service = {
+  obtenerPlanes: async (participante_id) => {
+    const response = await api.get(`/entrenamiento-v2/planes/participante/${participante_id}`);
+    return response.data;
+  },
+
+  obtenerPlan: async (plan_id) => {
+    const response = await api.get(`/entrenamiento-v2/plan/${plan_id}`);
+    return response.data;
+  },
+
+  crearPlan: async (plan) => {
+    const response = await api.post('/entrenamiento-v2/plan', plan);
+    return response.data;
+  },
+
+  actualizarPlan: async (plan_id, plan) => {
+    const response = await api.put(`/entrenamiento-v2/plan/${plan_id}`, plan);
+    return response.data;
+  },
+
+  eliminarPlan: async (plan_id) => {
+    const response = await api.delete(`/entrenamiento-v2/plan/${plan_id}`);
+    return response.data;
+  },
+
+  agregarDia: async (plan_id, dia) => {
+    const response = await api.post(`/entrenamiento-v2/plan/${plan_id}/dia`, dia);
+    return response.data;
+  },
+
+  actualizarDia: async (dia_id, dia) => {
+    const response = await api.put(`/entrenamiento-v2/dia/${dia_id}`, dia);
+    return response.data;
+  },
+
+  eliminarDia: async (dia_id) => {
+    const response = await api.delete(`/entrenamiento-v2/dia/${dia_id}`);
+    return response.data;
+  },
+
+  agregarEjercicio: async (dia_id, ejercicio) => {
+    const response = await api.post(`/entrenamiento-v2/dia/${dia_id}/ejercicio`, ejercicio);
+    return response.data;
+  },
+
+  actualizarEjercicio: async (ejercicio_id, ejercicio) => {
+    const response = await api.put(`/entrenamiento-v2/ejercicio/${ejercicio_id}`, ejercicio);
+    return response.data;
+  },
+
+  eliminarEjercicio: async (ejercicio_id) => {
+    const response = await api.delete(`/entrenamiento-v2/ejercicio/${ejercicio_id}`);
+    return response.data;
+  },
+
+  registrarEjercicio: async (registro) => {
+    const response = await api.post('/entrenamiento-v2/registro', registro);
+    return response.data;
+  },
+
+  obtenerHistorial: async (participante_id, ejercicio_dia_id) => {
+    const response = await api.get(`/entrenamiento-v2/historial/${participante_id}/${ejercicio_dia_id}`);
+    return response.data;
+  },
+
+  obtenerProgreso: async (participante_id, plan_id) => {
+    const response = await api.get(`/entrenamiento-v2/progreso/${participante_id}/${plan_id}`);
+    return response.data;
+  },
+};
+
 // ============= NUTRICIÓN =============
 
 export const nutricionService = {

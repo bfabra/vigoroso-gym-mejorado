@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { entrenamientoService, asignacionesService, nutricionService, participantesService } from '../../services/api';
+import { entrenamientoService, asignacionesService, nutricionService, participantesService, entrenamientoV2Service } from '../../services/api';
 import {
   DumbbellIcon,
   LogOutIcon,
@@ -45,6 +45,20 @@ function ParticipantDashboard({ user, onLogout }) {
   const [usandoNuevoSistema, setUsandoNuevoSistema] = useState(false);
   const [snapshotDias, setSnapshotDias] = useState([]);
 
+  // Estados para entrenamiento v2
+  const [v2Planes, setV2Planes] = useState([]);
+  const [v2PlanSeleccionado, setV2PlanSeleccionado] = useState(null); // { id, nombre, nivel, ... }
+  const [v2Dias, setV2Dias] = useState([]); // [{id, numero_dia, nombre, ejercicios:[]}]
+  const [v2Registros, setV2Registros] = useState({}); // keyed by ejercicio_dia_id
+  const [expandedDiaV2, setExpandedDiaV2] = useState(null); // dia id
+  const [v2HistorialEjercicio, setV2HistorialEjercicio] = useState([]);
+  const [v2EjercicioSeleccionado, setV2EjercicioSeleccionado] = useState(null);
+  const [showV2HistorialModal, setShowV2HistorialModal] = useState(false);
+  const [v2Guardando, setV2Guardando] = useState({}); // {ejercicio_dia_id: bool}
+  // Per-exercise log form state
+  const [v2FormRegistros, setV2FormRegistros] = useState({});
+  // { [ejercicio_dia_id]: { peso_utilizado: '', series_completadas: '', repeticiones_reales: '', dificultad: '', notas: '' } }
+
   const currentMonth = selectedMonth; // Para mantener compatibilidad
   const dias = DIAS_SEMANA;
 
@@ -62,6 +76,12 @@ function ParticipantDashboard({ user, onLogout }) {
       loadRegistros();
     }
   }, [selectedDate]);
+
+  useEffect(() => {
+    if (activeTab === 'training') {
+      loadV2Planes();
+    }
+  }, [activeTab, user.id]);
 
   const loadTrainingPlan = async () => {
     try {
@@ -202,6 +222,87 @@ function ParticipantDashboard({ user, onLogout }) {
     });
   };
 
+  // Funciones para entrenamiento v2
+  const loadV2Planes = async () => {
+    try {
+      const data = await entrenamientoV2Service.obtenerPlanes(user.id);
+      setV2Planes(data || []);
+    } catch (err) {
+      console.error('Error cargando planes v2:', err);
+    }
+  };
+
+  const cargarPlanV2 = async (plan) => {
+    if (v2PlanSeleccionado?.id === plan.id) {
+      setV2PlanSeleccionado(null);
+      setV2Dias([]);
+      return;
+    }
+    try {
+      const data = await entrenamientoV2Service.obtenerPlan(plan.id);
+      setV2PlanSeleccionado(data);
+      setV2Dias(data.dias || []);
+      setV2Registros({});
+      setExpandedDiaV2(null);
+    } catch (err) {
+      console.error('Error cargando plan v2:', err);
+    }
+  };
+
+  const handleGuardarRegistroV2 = async (ejercicioId) => {
+    const form = v2FormRegistros[ejercicioId] || {};
+    if (!form.peso_utilizado && !form.series_completadas && !form.repeticiones_reales) return;
+    setV2Guardando(prev => ({ ...prev, [ejercicioId]: true }));
+    try {
+      const registro = {
+        participante_id: user.id,
+        ejercicio_dia_id: ejercicioId,
+        fecha: selectedDate,
+        series_completadas: form.series_completadas ? parseInt(form.series_completadas) : undefined,
+        repeticiones_reales: form.repeticiones_reales || undefined,
+        peso_utilizado: form.peso_utilizado ? parseFloat(form.peso_utilizado) : undefined,
+        dificultad: form.dificultad || undefined,
+        notas: form.notas || undefined,
+      };
+      if (v2Registros[ejercicioId]) {
+        await entrenamientoV2Service.registrarEjercicio(registro); // creates new record (no update endpoint exposed)
+      } else {
+        await entrenamientoV2Service.registrarEjercicio(registro);
+      }
+      setV2Registros(prev => ({ ...prev, [ejercicioId]: registro }));
+    } catch (err) {
+      console.error('Error guardando registro v2:', err);
+      alert('Error al guardar el registro');
+    } finally {
+      setV2Guardando(prev => ({ ...prev, [ejercicioId]: false }));
+    }
+  };
+
+  const updateV2FormField = (ejercicioId, field, value) => {
+    setV2FormRegistros(prev => ({
+      ...prev,
+      [ejercicioId]: { ...(prev[ejercicioId] || {}), [field]: value }
+    }));
+  };
+
+  const handleVerHistorialV2 = async (ejercicio) => {
+    try {
+      setV2EjercicioSeleccionado(ejercicio);
+      const data = await entrenamientoV2Service.obtenerHistorial(user.id, ejercicio.id);
+      setV2HistorialEjercicio(data || []);
+      setShowV2HistorialModal(true);
+    } catch (err) {
+      console.error('Error cargando historial v2:', err);
+      alert('Error al cargar el historial');
+    }
+  };
+
+  const nivelColor = (nivel) => {
+    if (nivel === 'Principiante') return '#10b981';
+    if (nivel === 'Avanzado') return '#ef4444';
+    return '#f59e0b';
+  };
+
   // Handlers para cambio de contraseña
   const handleChangePassword = async (e) => {
     e.preventDefault();
@@ -340,6 +441,153 @@ function ParticipantDashboard({ user, onLogout }) {
 
         {activeTab === 'training' && (
           <div className="participant-training">
+            {/* ========== PROGRAMAS V2 ========== */}
+            {v2Planes.length > 0 && (
+              <div style={{ marginBottom: '24px' }}>
+                <h3 style={{ color: 'var(--orange-primary)', fontFamily: 'Rajdhani, sans-serif', fontSize: '20px', marginBottom: '12px', letterSpacing: '1px' }}>
+                  🏋️ PROGRAMAS DE ENTRENAMIENTO
+                </h3>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                  {v2Planes.map(plan => (
+                    <div key={plan.id} style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', overflow: 'hidden' }}>
+                      <button
+                        onClick={() => cargarPlanV2(plan)}
+                        style={{ width: '100%', background: 'transparent', border: 'none', padding: '16px 20px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'space-between', color: 'var(--text-primary)' }}
+                      >
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap' }}>
+                          <span style={{ fontWeight: 'bold', fontSize: '16px' }}>{plan.nombre}</span>
+                          {plan.nivel && (
+                            <span style={{ background: nivelColor(plan.nivel), color: 'white', padding: '2px 10px', borderRadius: '12px', fontSize: '12px', fontWeight: 'bold' }}>
+                              {plan.nivel}
+                            </span>
+                          )}
+                          {plan.objetivo && <span style={{ color: 'var(--text-secondary)', fontSize: '13px' }}>• {plan.objetivo}</span>}
+                          {plan.duracion_semanas && <span style={{ color: 'var(--text-secondary)', fontSize: '13px' }}>• {plan.duracion_semanas} semanas</span>}
+                        </div>
+                        {v2PlanSeleccionado?.id === plan.id ? <ChevronDownIcon /> : <ChevronRightIcon />}
+                      </button>
+
+                      {v2PlanSeleccionado?.id === plan.id && (
+                        <div style={{ borderTop: '1px solid rgba(255,255,255,0.1)', padding: '12px' }}>
+                          {v2Dias.length === 0 && <p style={{ color: 'var(--text-secondary)', textAlign: 'center', padding: '20px' }}>Este programa no tiene días configurados</p>}
+                          {v2Dias.map(dia => (
+                            <div key={dia.id} className="day-card" style={{ marginBottom: '8px' }}>
+                              <button
+                                className="day-header"
+                                onClick={() => setExpandedDiaV2(expandedDiaV2 === dia.id ? null : dia.id)}
+                              >
+                                <span className="day-name">Día {dia.numero_dia}{dia.nombre ? `: ${dia.nombre}` : ''}</span>
+                                {expandedDiaV2 === dia.id ? <ChevronDownIcon /> : <ChevronRightIcon />}
+                              </button>
+
+                              {expandedDiaV2 === dia.id && (
+                                <div className="day-exercises">
+                                  {dia.notas && (
+                                    <p style={{ color: 'var(--text-secondary)', fontSize: '13px', padding: '8px 16px', fontStyle: 'italic' }}>
+                                      📝 {dia.notas}
+                                    </p>
+                                  )}
+                                  {(dia.ejercicios || []).map(ej => {
+                                    const form = v2FormRegistros[ej.id] || {};
+                                    const guardando = v2Guardando[ej.id];
+                                    const registrado = v2Registros[ej.id];
+                                    return (
+                                      <div key={ej.id} className="participant-exercise-card-enhanced">
+                                        <div className="exercise-header-row">
+                                          <div className="exercise-info">
+                                            <h4>{ej.nombre_ejercicio}</h4>
+                                            <p className="exercise-plan-info">{ej.series} series × {ej.repeticiones} reps</p>
+                                            {ej.peso && <p style={{ color: 'var(--text-secondary)', fontSize: '13px' }}>⚖️ Referencia: {ej.peso} kg</p>}
+                                            {ej.descanso && <p style={{ color: 'var(--text-secondary)', fontSize: '13px' }}>⏱ Descanso: {ej.descanso}</p>}
+                                            {ej.notas && <p className="exercise-notes"><strong>Instrucción:</strong> {ej.notas}</p>}
+                                          </div>
+                                          <button onClick={() => handleVerHistorialV2(ej)} className="btn-history">📊 Historial</button>
+                                        </div>
+
+                                        <div className="exercise-log-enhanced">
+                                          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px', marginBottom: '8px' }}>
+                                            <div className="weight-input-group">
+                                              <label>Peso usado (kg):</label>
+                                              <input
+                                                type="number"
+                                                inputMode="decimal"
+                                                value={form.peso_utilizado || ''}
+                                                onChange={e => updateV2FormField(ej.id, 'peso_utilizado', e.target.value)}
+                                                placeholder="Ej: 80"
+                                                className="weight-input"
+                                              />
+                                            </div>
+                                            <div className="weight-input-group">
+                                              <label>Series completadas:</label>
+                                              <input
+                                                type="number"
+                                                inputMode="numeric"
+                                                value={form.series_completadas || ''}
+                                                onChange={e => updateV2FormField(ej.id, 'series_completadas', e.target.value)}
+                                                placeholder={String(ej.series)}
+                                                className="weight-input"
+                                              />
+                                            </div>
+                                            <div className="weight-input-group">
+                                              <label>Repeticiones reales:</label>
+                                              <input
+                                                type="text"
+                                                value={form.repeticiones_reales || ''}
+                                                onChange={e => updateV2FormField(ej.id, 'repeticiones_reales', e.target.value)}
+                                                placeholder={ej.repeticiones}
+                                                className="weight-input"
+                                              />
+                                            </div>
+                                            <div className="weight-input-group">
+                                              <label>Dificultad:</label>
+                                              <select
+                                                value={form.dificultad || ''}
+                                                onChange={e => updateV2FormField(ej.id, 'dificultad', e.target.value)}
+                                                style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.2)', color: 'var(--text-primary)', borderRadius: '8px', padding: '8px', width: '100%' }}
+                                              >
+                                                <option value="">-- Seleccionar --</option>
+                                                <option>Fácil</option>
+                                                <option>Moderado</option>
+                                                <option>Difícil</option>
+                                                <option>Muy Difícil</option>
+                                              </select>
+                                            </div>
+                                          </div>
+                                          <div className="notes-input-group">
+                                            <label>Notas personales:</label>
+                                            <textarea
+                                              value={form.notas || ''}
+                                              onChange={e => updateV2FormField(ej.id, 'notas', e.target.value)}
+                                              placeholder="Ej: Me sentí fuerte, aumentar peso próxima vez..."
+                                              rows={2}
+                                              className="notes-textarea"
+                                            />
+                                          </div>
+                                          <button
+                                            onClick={() => handleGuardarRegistroV2(ej.id)}
+                                            className="btn-save-notes"
+                                            disabled={guardando}
+                                            style={{ marginTop: '8px' }}
+                                          >
+                                            {guardando ? 'Guardando...' : (registrado ? '✅ Actualizar Registro' : '💾 Guardar Registro')}
+                                          </button>
+                                        </div>
+                                      </div>
+                                    );
+                                  })}
+                                </div>
+                              )}
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+                <hr style={{ border: '1px solid rgba(255,255,255,0.1)', margin: '24px 0' }} />
+              </div>
+            )}
+
             <div className="month-selector-custom">
               <span className="month-selector-label">Mes del Plan</span>
               <div className="month-selector-controls">
@@ -707,6 +955,58 @@ function ParticipantDashboard({ user, onLogout }) {
           </div>
         )}
       </main>
+
+      {/* Modal Historial V2 */}
+      {showV2HistorialModal && v2EjercicioSeleccionado && (
+        <div className="modal-overlay" onClick={() => setShowV2HistorialModal(false)}>
+          <div className="modal-content" onClick={e => e.stopPropagation()}>
+            <div className="modal-header">
+              <h2>Historial: {v2EjercicioSeleccionado.nombre_ejercicio}</h2>
+              <button onClick={() => setShowV2HistorialModal(false)} className="btn-close-modal"><XIcon /></button>
+            </div>
+            <div className="modal-body">
+              {v2HistorialEjercicio.length === 0 ? (
+                <div className="empty-state-small"><p>No hay registros previos para este ejercicio</p></div>
+              ) : (
+                <div className="history-list">
+                  <div className="history-stats">
+                    <div className="stat-box">
+                      <span className="stat-label">Máximo registrado</span>
+                      <span className="stat-value-large">{Math.max(...v2HistorialEjercicio.map(h => h.peso_utilizado || 0))} kg</span>
+                    </div>
+                    <div className="stat-box">
+                      <span className="stat-label">Promedio</span>
+                      <span className="stat-value-large">{(v2HistorialEjercicio.reduce((a, h) => a + (h.peso_utilizado || 0), 0) / v2HistorialEjercicio.length).toFixed(1)} kg</span>
+                    </div>
+                    <div className="stat-box">
+                      <span className="stat-label">Sesiones</span>
+                      <span className="stat-value-large">{v2HistorialEjercicio.length}</span>
+                    </div>
+                  </div>
+                  <div className="history-timeline">
+                    {v2HistorialEjercicio.map((rec, i) => (
+                      <div key={rec.id || i} className="history-record">
+                        <div className="record-date">
+                          <span className="date-day">{new Date(rec.fecha).toLocaleDateString('es', { day: '2-digit', month: 'short' })}</span>
+                          <span className="date-year">{new Date(rec.fecha).getFullYear()}</span>
+                        </div>
+                        <div className="record-details">
+                          <div className="record-weight">
+                            <strong>{rec.peso_utilizado || 0} kg</strong>
+                            {rec.series_completadas && <span style={{ color: 'var(--text-secondary)', fontSize: '13px', marginLeft: '8px' }}>{rec.series_completadas} series</span>}
+                            {rec.dificultad && <span style={{ color: 'var(--orange-primary)', fontSize: '12px', marginLeft: '8px' }}>{rec.dificultad}</span>}
+                          </div>
+                          {rec.notas && <div className="record-notes"><em>"{rec.notas}"</em></div>}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Modal de Historial */}
       {showHistoryModal && selectedExercise && (

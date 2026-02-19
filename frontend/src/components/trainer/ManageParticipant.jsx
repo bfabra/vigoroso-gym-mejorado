@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { UserIcon, DumbbellIcon, AppleIcon } from '../common/Icons';
 import TrainingPlanManager from '../training/TrainingPlanManager';
 import TemplateAssigner from '../training/TemplateAssigner';
+import PlanV2Manager from '../training/PlanV2Manager';
 import NutritionPlanManager from '../nutrition/NutritionPlanManager';
 
 function ManageParticipant({ participant, onBack, user }) {
@@ -41,6 +42,13 @@ function ManageParticipant({ participant, onBack, user }) {
             <span>Asignar Plantilla</span>
           </button>
           <button
+            className={`tab ${activeTab === 'plansv2' ? 'active' : ''}`}
+            onClick={() => setActiveTab('plansv2')}
+          >
+            <DumbbellIcon />
+            <span>Programas v2</span>
+          </button>
+          <button
             className={`tab ${activeTab === 'nutrition' ? 'active' : ''}`}
             onClick={() => setActiveTab('nutrition')}
           >
@@ -54,6 +62,9 @@ function ManageParticipant({ participant, onBack, user }) {
         )}
         {activeTab === 'assign' && (
           <TemplateAssigner participantId={participant.id} userId={user.id} />
+        )}
+        {activeTab === 'plansv2' && (
+          <PlanV2Manager participantId={participant.id} userId={user.id} />
         )}
         {activeTab === 'nutrition' && (
           <NutritionPlanManager participantId={participant.id} userId={user.id} />
